@@ -262,7 +262,11 @@ declare namespace API {
     | 202011914
     | 'PROJECT_JOB_RESULT_HASH_EXPIRED_ERROR';
 
-  type KusciaGrpcErrorCode = 202012101 | 'RPC_ERROR' | 202012102 | 'KUSCIA_CPMMECT_ERROR';
+  type KusciaGrpcErrorCode =
+    | 202012101
+    | 'RPC_ERROR'
+    | 202012102
+    | 'KUSCIA_CPMMECT_ERROR';
 
   interface ListProjectJobRequest {
     /** What page is currently requested? Note that starting at 1 represents the first page */

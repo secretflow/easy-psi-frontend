@@ -28,7 +28,7 @@ export const ChangePasswordModal = ({ visible, close }: IChangePasswordModal) =>
         value.newPassword,
         value.verifiedNewPassword,
       );
-      if (status?.code == 0) {
+      if (status?.code === 0) {
         message.success('账户密码修改成功');
         close();
         await API.AuthController.logout(

@@ -9,10 +9,12 @@
     "start": "pnpm run dev",
     "lint": "umi lint",
     "prepare": "husky install",
+    "ci": "pnpm run lint:js & pnpm run lint:css & pnpm run lint:format",
     "lint:js": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "lint:css": "stylelint --allow-empty-input 'src/**/*.{css,less}'",
     "lint:format": "prettier --check *.json 'src/**/*.{js,jsx,ts,tsx,css,less,md,json}'",
-    "lint:typing": "tsc --noEmit"
+    "lint:typing": "tsc --noEmit",
+    "format-all": "prettier --write '**/src/**/*.{html,js,jsx,ts,tsx,css,less,json}' **/*.md"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",

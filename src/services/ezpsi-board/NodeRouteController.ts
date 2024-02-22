@@ -14,19 +14,28 @@ export async function queryCollaborationList(options?: { [key: string]: any }) {
 }
 
 /** 此处后端没有提供注释 POST /api/v1alpha1/nodeRoute/refresh */
-export async function refresh(body?: API.RouterIdRequest, options?: { [key: string]: any }) {
-  return request<API.SecretPadResponse_NodeRouterVO_>('/api/v1alpha1/nodeRoute/refresh', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+export async function refresh(
+  body?: API.RouterIdRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.SecretPadResponse_NodeRouterVO_>(
+    '/api/v1alpha1/nodeRoute/refresh',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** 此处后端没有提供注释 POST /api/v1alpha1/nodeRoute/test */
-export async function test(body?: API.RouterAddressRequest, options?: { [key: string]: any }) {
+export async function test(
+  body?: API.RouterAddressRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.SecretPadResponse_Boolean_>('/api/v1alpha1/nodeRoute/test', {
     method: 'POST',
     headers: {
@@ -38,7 +47,10 @@ export async function test(body?: API.RouterAddressRequest, options?: { [key: st
 }
 
 /** 此处后端没有提供注释 POST /api/v1alpha1/nodeRoute/update */
-export async function update(body?: API.UpdateNodeRouterRequest, options?: { [key: string]: any }) {
+export async function update(
+  body?: API.UpdateNodeRouterRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.SecretPadResponse_String_>('/api/v1alpha1/nodeRoute/update', {
     method: 'POST',
     headers: {

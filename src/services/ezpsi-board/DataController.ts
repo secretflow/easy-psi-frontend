@@ -7,14 +7,17 @@ export async function queryDataTableInformation(
   body?: API.GetDataTableInformatinoRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_DataTableInformationVo_>('/api/v1alpha1/data/count', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_DataTableInformationVo_>(
+    '/api/v1alpha1/data/count',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** 此处后端没有提供注释 POST /api/v1alpha1/data/version */

@@ -6,7 +6,10 @@ import request from 'umi-request';
 @param request create node request
 @return successful SecretPadResponse with nodeId
  POST /api/v1alpha1/node/create */
-export async function createNode(body?: API.CreateNodeRequest, options?: { [key: string]: any }) {
+export async function createNode(
+  body?: API.CreateNodeRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.SecretPadResponse_String_>('/api/v1alpha1/node/create', {
     method: 'POST',
     headers: {
@@ -18,7 +21,10 @@ export async function createNode(body?: API.CreateNodeRequest, options?: { [key:
 }
 
 /** 此处后端没有提供注释 POST /api/v1alpha1/node/delete */
-export async function deleteNode(body?: API.DeleteNodeIdRequest, options?: { [key: string]: any }) {
+export async function deleteNode(
+  body?: API.DeleteNodeIdRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.SecretPadResponse_Void_>('/api/v1alpha1/node/delete', {
     method: 'POST',
     headers: {
@@ -74,9 +80,12 @@ export async function upload(files?: File[], options?: { [key: string]: any }) {
   if (files) {
     formData.append('file', files[0] || '');
   }
-  return request<API.SecretPadResponse_UploadNodeResultVO_>('/api/v1alpha1/node/upload', {
-    method: 'POST',
-    data: formData,
-    ...(options || {}),
-  });
+  return request<API.SecretPadResponse_UploadNodeResultVO_>(
+    '/api/v1alpha1/node/upload',
+    {
+      method: 'POST',
+      data: formData,
+      ...(options || {}),
+    },
+  );
 }

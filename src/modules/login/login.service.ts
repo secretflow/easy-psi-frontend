@@ -45,6 +45,6 @@ export class LoginService extends Model {
       newPasswordHash: sha256(newPwd).toString(),
       confirmPasswordHash: sha256(verifiedNewPwd).toString(),
     });
-    return res.status
+    return res.status;
   };
 }

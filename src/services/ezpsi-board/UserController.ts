@@ -16,7 +16,10 @@ export async function get(options?: { [key: string]: any }) {
 @param userUpdatePwdRequest
 @return {@link SecretPadResponse }<{@link Boolean }>
  POST /api/v1alpha1/user/updatePwd */
-export async function updatePwd(body?: API.UserUpdatePwdRequest, options?: { [key: string]: any }) {
+export async function updatePwd(
+  body?: API.UserUpdatePwdRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.SecretPadResponse_Boolean_>('/api/v1alpha1/user/updatePwd', {
     method: 'POST',
     headers: {

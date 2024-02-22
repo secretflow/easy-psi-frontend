@@ -46,14 +46,17 @@ export async function continueKusciaJob(
   body?: API.StopProjectJobTaskRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_Void_>('/api/v1alpha1/project/job/continue/kuscia', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_Void_>(
+    '/api/v1alpha1/project/job/continue/kuscia',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Create project job api
@@ -64,14 +67,17 @@ export async function createJob(
   body?: API.CreateProjectJobRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_CreateProjectJobVO_>('/api/v1alpha1/project/job/create', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_CreateProjectJobVO_>(
+    '/api/v1alpha1/project/job/create',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Create project job api
@@ -82,14 +88,17 @@ export async function createKusciaJob(
   body?: API.CreateProjectJobTaskRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_Void_>('/api/v1alpha1/project/job/create/kuscia', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_Void_>(
+    '/api/v1alpha1/project/job/create/kuscia',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Delete project job api
@@ -118,14 +127,17 @@ export async function downloadProjectResult(
   body?: API.DownloadProjectResult,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_String_>('/api/v1alpha1/project/job/result/download', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_String_>(
+    '/api/v1alpha1/project/job/result/download',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Query csv data header
@@ -135,14 +147,17 @@ export async function getDataHeader(
   body?: API.GetProjectJobDataHeaderRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_GrapDataHeaderVO_>('/api/v1alpha1/project/data/header', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_GrapDataHeaderVO_>(
+    '/api/v1alpha1/project/data/header',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Query csv data table
@@ -152,21 +167,27 @@ export async function getDataTable(
   body?: API.GetProjectJobTableRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_GrapDataTableVO_>('/api/v1alpha1/project/data/table', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_GrapDataTableVO_>(
+    '/api/v1alpha1/project/data/table',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Query project job detail api
 @param request get project job request
 @return successful SecretPadResponse with project job view object
  POST /api/v1alpha1/project/job/get */
-export async function getJob(body?: API.GetProjectJobRequest, options?: { [key: string]: any }) {
+export async function getJob(
+  body?: API.GetProjectJobRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.SecretPadResponse_ProjectJobVO_>('/api/v1alpha1/project/job/get', {
     method: 'POST',
     headers: {
@@ -184,14 +205,17 @@ export async function getProjectLogs(
   body?: API.GetProjectJobLogRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_GraphNodeJobLogsVO_>('/api/v1alpha1/project/job/logs', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_GraphNodeJobLogsVO_>(
+    '/api/v1alpha1/project/job/logs',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Download project result api
@@ -209,24 +233,30 @@ export async function getloadProjectResult(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.OneApiResult_object_>('/api/v1alpha1/project/job/result/download', {
-    method: 'GET',
-    params: {
-      ...params,
-      response: undefined,
-      ...params['response'],
-      request: undefined,
-      ...params['request'],
+  return request<API.OneApiResult_object_>(
+    '/api/v1alpha1/project/job/result/download',
+    {
+      method: 'GET',
+      params: {
+        ...params,
+        response: undefined,
+        ...params['response'],
+        request: undefined,
+        ...params['request'],
+      },
+      ...(options || {}),
     },
-    ...(options || {}),
-  });
+  );
 }
 
 /** Paging list project job list api
 @param request list project job request
 @return successful SecretPadResponse with paging project job view object
  POST /api/v1alpha1/project/job/list */
-export async function listJob(body?: API.ListProjectJobRequest, options?: { [key: string]: any }) {
+export async function listJob(
+  body?: API.ListProjectJobRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.SecretPadResponse_SecretPadPageResponse_ProjectJobListVO__>(
     '/api/v1alpha1/project/job/list',
     {
@@ -266,24 +296,30 @@ export async function pauseKusciaJob(
   body?: API.StopProjectJobTaskRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_Void_>('/api/v1alpha1/project/job/pause/kuscia', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  return request<API.SecretPadResponse_Void_>(
+    '/api/v1alpha1/project/job/pause/kuscia',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: body,
+      ...(options || {}),
     },
-    data: body,
-    ...(options || {}),
-  });
+  );
 }
 
 /** Query project edge job list
 @return project job view object list
  POST /api/v1alpha1/project/edge/job/list */
 export async function queryEdgeProjectJobs(options?: { [key: string]: any }) {
-  return request<API.SecretPadResponse_List_ProjectJobVO__>('/api/v1alpha1/project/edge/job/list', {
-    method: 'POST',
-    ...(options || {}),
-  });
+  return request<API.SecretPadResponse_List_ProjectJobVO__>(
+    '/api/v1alpha1/project/edge/job/list',
+    {
+      method: 'POST',
+      ...(options || {}),
+    },
+  );
 }
 
 /** Reject project job api

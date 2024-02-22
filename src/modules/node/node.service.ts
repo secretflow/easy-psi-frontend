@@ -29,7 +29,7 @@ export class NodeService extends Model implements NodeServiceProtocol {
     nodeRemark?: string;
     srcNetAddress: string;
   }): Promise<void> {
-    const { status } = await API.NodeController.createNode({ ...info});
+    const { status } = await API.NodeController.createNode({ ...info });
     if (status?.code !== 0) throw new Error(status?.msg);
   }
   async deleteNodeRoute(routerId: string): Promise<void> {
