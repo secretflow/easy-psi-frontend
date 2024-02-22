@@ -1,0 +1,181 @@
+.guideLayout {
+  .block {
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 5%);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .top {
+    // min-height: 498px;
+    margin: 12px 24px;
+
+    .title {
+      padding-top: 8px;
+      color: rgba(0, 0, 0, 85%);
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 30px;
+
+      .cup {
+        font-size: 24px !important;
+      }
+
+      .ezpsi {
+        font-size: 30px;
+      }
+    }
+
+    .description {
+      font-weight: 400;
+      padding: 16px 0 24px 33px;
+      font-size: 16px;
+      color: rgba(0, 0, 0, 85%);
+      line-height: 22px;
+
+      .more {
+        color: #1677ff;
+        text-decoration: none;
+        background-color: transparent;
+        outline: none;
+        cursor: pointer;
+      }
+    }
+
+    .graph {
+      height: 275px;
+    }
+
+    // .buttons {
+    //   margin-top: 20px;
+
+    //   .mainButton {
+    //     height: 52px;
+    //     width: 300px;
+
+    //     span {
+    //       color: #fff;
+    //       font-size: 23px;
+    //       font-weight: 400;
+    //       letter-spacing: 0;
+    //       text-align: center;
+    //     }
+    //   }
+    // }
+  }
+
+  .bottom {
+    display: flex;
+    margin: 20px 24px;
+
+    .empty {
+      margin-top: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .title {
+      font-weight: 500;
+      font-size: 18px;
+      color: rgba(0, 0, 0, 85%);
+      letter-spacing: 0;
+      line-height: 22px;
+    }
+
+    .bottomLeft {
+      min-height: 290px;
+      margin-right: 20px;
+      flex: 1 1032px;
+    }
+
+    .bottomRight {
+      min-height: 290px;
+      flex: 1 340px;
+      overflow: auto;
+      position: relative;
+
+      .listContainer {
+        .routeItem {
+          background-color: #f7f8fa;
+          border-radius: 8px;
+          padding: 12px;
+          margin: 16px 0 4px;
+          box-sizing: border-box;
+          border: 1px solid #f7f8fa;
+
+          .routeHeaderLayout {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          &:hover {
+            border: 1px solid #0068fa;
+            transition: border 0.3s;
+
+            .routeName {
+              color: rgba(0, 104, 250, 100%);
+              cursor: pointer;
+            }
+
+            .actionIcon {
+              color: rgba(0, 0, 0, 45%);
+              visibility: visible;
+              cursor: pointer;
+            }
+          }
+
+          .actionIcon {
+            font-size: 14px;
+            visibility: hidden;
+
+            &:hover {
+              color: rgba(0, 104, 250, 100%);
+            }
+          }
+
+          .routeDescription {
+            color: rgba(0, 0, 0, 45%);
+            font-size: 12px;
+            margin: 2px 0;
+          }
+        }
+      }
+
+      .addNodeRouteBtn {
+        position: absolute;
+        right: 24px;
+        top: 24px;
+        height: 22px;
+        font-weight: 400;
+        font-size: 14px;
+        color: #1677ff;
+        line-height: 22px;
+        cursor: pointer;
+
+        svg {
+          margin-right: 4px;
+        }
+      }
+    }
+
+    .addButton {
+      height: 40px;
+    }
+  }
+
+  .screenLargeBottom {
+    height: calc(100vh - 530px);
+    margin-bottom: 0;
+  }
+}
+
+.tourAddNode {
+  width: 290px;
+  height: 184px;
+}
+
+.createTaskNode {
+  width: 302px;
+  height: 100px;
+}

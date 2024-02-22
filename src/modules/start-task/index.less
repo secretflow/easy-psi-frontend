@@ -1,0 +1,146 @@
+.taskContent {
+  height: 100%;
+  padding: 12px 20px;
+
+  :global {
+    .ant-form-item-required::before {
+      display: none !important;
+    }
+
+    .ant-typography {
+      color: rgba(0, 0, 0, 85%);
+    }
+  }
+
+  .header {
+    :global(.anticon-arrow-left) {
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .headerText {
+      font-size: 18px;
+      margin-left: 16px;
+      color: rgba(0, 0, 0, 85%);
+      font-weight: 500;
+    }
+  }
+
+  .card {
+    margin-top: 14px;
+
+    .dataPage {
+      margin-bottom: 52px;
+
+      :global {
+        .ant-alert-info {
+          height: 28px;
+          margin-left: 12px;
+        }
+
+        .ant-alert-message {
+          font-size: 12px;
+          color: rgba(0, 0, 0, 65%);
+        }
+
+        .ant-typography {
+          margin: 0;
+        }
+
+        .ant-form-item {
+          margin-bottom: 0;
+        }
+      }
+
+      .initiator {
+        display: flex;
+
+        :global(.ant-form-item) {
+          margin-bottom: 16px;
+        }
+      }
+    }
+
+    .resultPage {
+      margin-bottom: 52px;
+
+      :global {
+        .ant-typography {
+          margin: 0;
+          margin-bottom: 16px;
+        }
+
+        .ant-checkbox-wrapper {
+          margin-right: 46px;
+          align-items: center;
+        }
+      }
+    }
+
+    .advancedConfig {
+      margin-bottom: 52px;
+
+      .configIcon {
+        font-size: 14px;
+        color: rgba(0, 0, 0, 65%);
+        margin-left: 14px;
+        cursor: pointer;
+
+        span:nth-child(1) {
+          margin-right: 4px;
+        }
+      }
+
+      :global {
+        .ant-typography {
+          margin: 0;
+        }
+
+        .ant-radio-wrapper {
+          margin-right: 46px;
+        }
+      }
+    }
+  }
+
+  .close {
+    display: none;
+  }
+
+  .nodeSelector {
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 4px 8px;
+
+      .title {
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .workingDirAlert {
+    background-color: rgba(231, 239, 255, 100%);
+    border: 1px solid #a2bff9;
+  }
+
+  .workingDirAlertWarning {
+    background-color: #fff9eb;
+    border: 1px solid #ffd7a4;
+    height: 28px;
+    margin-left: 12px;
+  }
+
+  .recoveryEnabledAlert {
+    background-color: #fff9eb;
+    border: 1px solid #ffd7a4;
+    margin: 14px 0;
+  }
+
+  .errorNotice {
+    font-weight: 500;
+    font-size: 16px;
+  }
+}

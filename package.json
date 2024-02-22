@@ -1,0 +1,48 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "umi dev",
+    "preview": "umi preview",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "pnpm run dev",
+    "lint": "umi lint",
+    "prepare": "husky install",
+    "lint:js": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:css": "stylelint --allow-empty-input 'src/**/*.{css,less}'",
+    "lint:format": "prettier --check *.json 'src/**/*.{js,jsx,ts,tsx,css,less,md,json}'",
+    "lint:typing": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.2.6",
+    "@antv/x6": "^2.15.2",
+    "@antv/x6-react-shape": "^2.2.2",
+    "ahooks": "^3.7.8",
+    "antd": "^5.9.3",
+    "classnames": "^2.3.2",
+    "crypto-js": "^4.1.1",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.3.1",
+    "lodash": "^4.17.21",
+    "monaco-editor": "^0.44.0",
+    "query-string": "^8.1.0",
+    "umi": "^4.0.81",
+    "umi-request": "^1.4.0",
+    "valtio": "^1.11.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7",
+    "@umijs/lint": "^4.0.81",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
+    "eslint": "^8.50.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
+    "stylelint": "^15.10.3",
+    "typescript": "^5.2.2"
+  }
+}

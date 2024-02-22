@@ -1,0 +1,240 @@
+.taskDetailsContent {
+  height: 100%;
+  padding: 12px 20px;
+
+  :global {
+    .ant-progress {
+      width: 158px;
+      margin-bottom: 0;
+      margin-left: 8px;
+      margin-right: 24px;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+
+    .headerLeft {
+      display: flex;
+      align-items: center;
+
+      :global {
+        .anticon-arrow-left {
+          font-size: 20px;
+          cursor: pointer;
+        }
+
+        .ant-typography {
+          margin: 0;
+          margin-left: 16px;
+          font-size: 18px;
+        }
+      }
+
+      .idText {
+        margin-left: 12px;
+        font-weight: 500;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 45%);
+      }
+    }
+
+    .headerRight {
+      :global {
+        .ant-btn-primary:disabled {
+          background-color: #0068fa;
+          color: #fff;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  .oneCard {
+    margin-bottom: 16px;
+
+    .time {
+      :global(.ant-descriptions-item) {
+        padding-top: 16px;
+        padding-bottom: 12px;
+      }
+    }
+
+    .remark {
+      :global(.ant-descriptions-item) {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .twoCard {
+    .nodeConfig {
+      margin-bottom: 32px;
+
+      :global {
+        .ant-descriptions-header {
+          margin-bottom: 12px;
+        }
+
+        .ant-descriptions-item {
+          margin-bottom: 12px;
+        }
+
+        .ant-descriptions-title {
+          font-size: 14px;
+        }
+
+        .ant-descriptions-row:nth-child(2) {
+          .ant-descriptions-item {
+            margin-bottom: 0;
+            padding-bottom: 0;
+          }
+        }
+
+        .ant-upload-list-item {
+          margin-top: 0;
+        }
+
+        .ant-upload-list-item-container::before {
+          display: none;
+        }
+
+        .ant-upload-list::before {
+          display: none;
+        }
+
+        .ant-upload-wrapper {
+          display: flex;
+          flex-flow: row-reverse;
+        }
+      }
+    }
+
+    .resultConfig {
+      margin-bottom: 32px;
+
+      :global {
+        .ant-descriptions-header {
+          margin-bottom: 12px;
+        }
+
+        .ant-descriptions-item {
+          margin-bottom: 0;
+          padding-bottom: 0;
+        }
+
+        .ant-descriptions-title {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .close {
+      :global {
+        .ant-descriptions-header {
+          margin-bottom: 0;
+        }
+
+        .ant-descriptions-view {
+          display: none;
+        }
+      }
+    }
+
+    .advancedConfig {
+      :global {
+        .ant-descriptions-header {
+          margin-bottom: 12px;
+        }
+
+        .ant-descriptions-row{
+          .ant-descriptions-item {
+            padding-bottom: 12px;
+          }
+        }
+
+        .ant-descriptions-row:nth-child(3) {
+          .ant-descriptions-item {
+            padding-bottom: 0;
+          }
+        }
+      }
+    }
+
+    .configIcon {
+      font-weight: 400;
+      font-size: 14px;
+      color: rgba(0, 0, 0, 65%);
+      margin-left: 14px;
+      cursor: pointer;
+
+      span:nth-child(1) {
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+.successAlert {
+  background-color: rgba(236, 253, 243, 100%);
+  border: 1px solid #a5ebc2;
+  color: rgba(0, 0, 0, 88%);
+
+  :global(.ant-alert-icon) {
+    color: #24b55f;
+  }
+}
+
+.failedAlert {
+  background-color: rgba(255, 241, 240, 100%);
+  border: 1px solid #ffa39e;
+  color: rgba(0, 0, 0, 88%);
+
+  :global(.ant-alert-icon) {
+    color: #fc7574;
+  }
+}
+
+.runningAlert {
+  background-color: rgba(227, 240, 255, 100%);
+  border: 1px solid #a2bff9;
+  color: rgba(0, 0, 0, 88%);
+
+  :global(.ant-alert-icon) {
+    color: #0067fa;
+  }
+}
+
+.stoppedAlert {
+  background-color: rgba(227, 240, 255, 100%);
+  border: 1px solid #a2bff9;
+  color: rgba(0, 0, 0, 88%);
+
+  :global(.ant-alert-icon) {
+    color: #71abfc;
+  }
+}
+
+.pendingAlert {
+  background-color: rgba(255, 249, 235, 100%);
+  border: 1px solid #ffd7a4;
+  color: rgba(0, 0, 0, 88%);
+
+  :global(.ant-alert-icon) {
+    color: #faa942;
+  }
+}
+
+.recoveryEnabledAlert {
+  background-color: #fff9eb;
+  border: 1px solid #ffd7a4;
+  margin-top: 14px;
+}
+
+.customButton {
+  margin-top: 8px;
+  margin-bottom: -8px;
+  text-align: right;
+}

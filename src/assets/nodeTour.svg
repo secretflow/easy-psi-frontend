@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="268px" height="154px" viewBox="0 0 268 154" version="1.1"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 7</title>
+    <defs>
+        <path
+            d="M10.2555408,9.45915086e-16 L185.744459,4.14336123e-16 C189.310534,-2.4074122e-16 190.603679,0.371302445 191.907383,1.06853082 C193.211087,1.76575919 194.234241,2.78891348 194.931469,4.09261719 C195.628698,5.39632089 196,6.68946584 196,10.2555408 L196,85.7444592 C196,89.3105342 195.628698,90.6036791 194.931469,91.9073828 C194.234241,93.2110865 193.211087,94.2342408 191.907383,94.9314692 C190.603679,95.6286976 189.310534,96 185.744459,96 L10.2555408,96 C6.68946584,96 5.39632089,95.6286976 4.09261719,94.9314692 C2.78891348,94.2342408 1.76575919,93.2110865 1.06853082,91.9073828 C0.371302445,90.6036791 -6.29850978e-16,89.3105342 1.08402713e-15,85.7444592 L1.18305822e-15,10.2555408 C-6.87390896e-16,6.68946584 0.371302445,5.39632089 1.06853082,4.09261719 C1.76575919,2.78891348 2.78891348,1.76575919 4.09261719,1.06853082 C5.39632089,0.371302445 6.68946584,-5.49603905e-16 10.2555408,9.45915086e-16 Z"
+            id="path-1"></path>
+        <filter x="-29.8%" y="-51.6%" width="159.7%" height="221.9%" filterUnits="objectBoundingBox"
+            id="filter-2">
+            <feMorphology radius="4" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="9" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="14" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix
+                values="0 0 0 0 0   0 0 0 0 0.0392156863   0 0 0 0 0.101960784  0 0 0 0.05 0"
+                type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feOffset dx="0" dy="6" in="SourceAlpha" result="shadowOffsetOuter2"></feOffset>
+            <feGaussianBlur stdDeviation="8" in="shadowOffsetOuter2" result="shadowBlurOuter2"></feGaussianBlur>
+            <feColorMatrix
+                values="0 0 0 0 0   0 0 0 0 0.0392156863   0 0 0 0 0.101960784  0 0 0 0.08 0"
+                type="matrix" in="shadowBlurOuter2" result="shadowMatrixOuter2"></feColorMatrix>
+            <feMorphology radius="2" operator="erode" in="SourceAlpha" result="shadowSpreadOuter3"></feMorphology>
+            <feOffset dx="0" dy="3" in="shadowSpreadOuter3" result="shadowOffsetOuter3"></feOffset>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter3" result="shadowBlurOuter3"></feGaussianBlur>
+            <feColorMatrix
+                values="0 0 0 0 0   0 0 0 0 0.0392156863   0 0 0 0 0.101960784  0 0 0 0.12 0"
+                type="matrix" in="shadowBlurOuter3" result="shadowMatrixOuter3"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="shadowMatrixOuter2"></feMergeNode>
+                <feMergeNode in="shadowMatrixOuter3"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="1101优化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="工作台-新手" transform="translate(-304, -102)">
+            <g id="4.数据展示/11.Tour漫游式引导/非模态" transform="translate(298, 48.8284)">
+                <g id="编组-7" transform="translate(16, 53.1716)">
+                    <rect id="矩形" fill="#EAEDFB" x="0" y="0" width="248" height="154"></rect>
+                    <g id="编组-13备份-2" transform="translate(26, 12)">
+                        <rect id="ant-select-selector" fill="#FFFFFF" opacity="0.977380914" x="0"
+                            y="0" width="188" height="32"></rect>
+                        <path
+                            d="M18.0368153,4 L21.9631847,4 C25.2667891,4 26.6036791,4.37130244 27.9073828,5.06853082 C29.2110865,5.76575919 30.2342408,6.78891348 30.9314692,8.09261719 C31.6286976,9.39632089 32,10.7332109 32,14.0368153 L32,17.9631847 C32,21.2667891 31.6286976,22.6036791 30.9314692,23.9073828 C30.2342408,25.2110865 29.2110865,26.2342408 27.9073828,26.9314692 C26.6036791,27.6286976 25.2667891,28 21.9631847,28 L18.0368153,28 C14.7332109,28 13.3963209,27.6286976 12.0926172,26.9314692 C10.7889135,26.2342408 9.76575919,25.2110865 9.06853082,23.9073828 C8.37130244,22.6036791 8,21.2667891 8,17.9631847 L8,14.0368153 C8,10.7332109 8.37130244,9.39632089 9.06853082,8.09261719 C9.76575919,6.78891348 10.7889135,5.76575919 12.0926172,5.06853082 C13.3963209,4.37130244 14.7332109,4 18.0368153,4 Z"
+                            id="矩形备份-34"></path>
+                        <g id="1-通用/2-图标占位-Placeholder/16px" transform="translate(13, 9)"
+                            fill="#000000" fill-opacity="0.65">
+                            <g id="ICON">
+                                <path
+                                    d="M12,0 C12.2761424,0 12.5,0.223857625 12.5,0.5 L12.5,13.5 C12.5,13.7761424 12.2761424,14 12,14 L2,14 C1.72385763,14 1.5,13.7761424 1.5,13.5 L1.5,0.5 C1.5,0.223857625 1.72385763,0 2,0 L12,0 Z M11.375,9.625 L2.625,9.625 L2.625,12.875 L11.375,12.875 L11.375,9.625 Z M9.625,10.6875 C9.97017797,10.6875 10.25,10.967322 10.25,11.3125 C10.25,11.657678 9.97017797,11.9375 9.625,11.9375 C9.27982203,11.9375 9,11.657678 9,11.3125 C9,10.967322 9.27982203,10.6875 9.625,10.6875 Z M11.375,5.375 L2.625,5.375 L2.625,8.625 L11.375,8.625 L11.375,5.375 Z M6.375,6.5 C6.65114237,6.5 6.875,6.72385763 6.875,7 C6.875,7.27614237 6.65114237,7.5 6.375,7.5 L4.25,7.5 C3.97385763,7.5 3.75,7.27614237 3.75,7 C3.75,6.72385763 3.97385763,6.5 4.25,6.5 L6.375,6.5 Z M11.375,1.125 L2.625,1.125 L2.625,4.375 L11.375,4.375 L11.375,1.125 Z M6.375,2.25 C6.65114237,2.25 6.875,2.47385763 6.875,2.75 C6.875,3.02614237 6.65114237,3.25 6.375,3.25 L4.25,3.25 C3.97385763,3.25 3.75,3.02614237 3.75,2.75 C3.75,2.47385763 3.97385763,2.25 4.25,2.25 L6.375,2.25 Z"
+                                    id="节点"></path>
+                            </g>
+                        </g>
+                        <text id="我的节点" font-family="PingFangSC-Regular, PingFang SC" font-size="14"
+                            font-weight="normal" fill="#000000" fill-opacity="0.85">
+                            <tspan x="32" y="21">我的节点</tspan>
+                        </text>
+                    </g>
+                    <g id="编组-9" transform="translate(26, 46)">
+                        <g id="矩形">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)"
+                                xlink:href="#path-1"></use>
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                        <g id="导航/Menu导航菜单/亮色/侧边导航-产品名称备份-25" transform="translate(12, 17)"
+                            font-family="PingFangSC-Regular, PingFang SC" font-size="14"
+                            font-weight="normal">
+                            <text id="下拉选项" line-spacing="22" fill="#000A1A" fill-opacity="0.89">
+                                <tspan x="0" y="15">节点公钥：</tspan>
+                            </text>
+                            <text id="Title备份-2" line-spacing="18" fill="#0068FA">
+                                <tspan x="70" y="17">下载</tspan>
+                            </text>
+                        </g>
+                        <g id="导航/Menu导航菜单/亮色/侧边导航-产品名称备份-26" transform="translate(12, 57)"
+                            font-family="PingFangSC-Regular, PingFang SC" font-size="14"
+                            font-weight="normal" line-spacing="22">
+                            <text id="节点根目录：" fill="#000A1A" fill-opacity="0.89">
+                                <tspan x="0" y="15">节点根目录：</tspan>
+                            </text>
+                            <text id="Title备份-2" fill="#000000" fill-opacity="0.88">
+                                <tspan x="84" y="15">/data/alice</tspan>
+                            </text>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,144 @@
+.routeListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  .title {
+    font-weight: 500;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 85%);
+    letter-spacing: 0;
+    line-height: 22px;
+  }
+
+  .addBtn {
+    padding: 0;
+  }
+}
+
+.routeItem {
+  background-color: #f7f8fa;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px 0 4px;
+  box-sizing: border-box;
+  border: 1px solid #f7f8fa;
+
+  .routeHeaderLayout {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &:hover {
+    border: 1px solid #0068fa;
+    transition: border 0.3s;
+
+    .routeName {
+      color: rgba(0, 104, 250, 100%);
+      cursor: pointer;
+    }
+
+    .actionIcon {
+      color: rgba(0, 0, 0, 45%);
+      visibility: visible;
+      cursor: pointer;
+    }
+  }
+
+  .actionIcon {
+    font-size: 14px;
+    visibility: hidden;
+
+    &:hover {
+      color: rgba(0, 104, 250, 100%);
+    }
+  }
+
+  .routeDescription {
+    color: rgba(0, 0, 0, 45%);
+    font-size: 12px;
+    margin: 2px 0;
+  }
+}
+
+.addNodeDrawer {
+  .title {
+    font-weight: 500;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 88%);
+  }
+
+  .subTitleContent {
+    display: flex;
+    align-items: center;
+
+    .subTitle {
+      font-weight: 500;
+      font-size: 14px;
+      color: rgba(0, 0, 0, 88%);
+    }
+
+    .alert {
+      margin-left: 8px;
+      height: 28px;
+      width: 368px;
+      background-color: #fff9eb;
+      border: 1px solid #ffd7a4;
+      border-radius: 8px;
+      font-weight: 400;
+      font-size: 12px;
+      color: rgba(0, 0, 0, 65%);
+      line-height: 22px;
+    }
+  }
+
+  .part {
+    background-color: rgba(0, 0, 0, 2%);
+    border-radius: 8px;
+    padding: 16px 16px 1px;
+    margin: 8px 0 24px;
+
+    :global(.ant-form-item) {
+      margin-bottom: 16px;
+
+      label {
+        width: 100%;
+      }
+    }
+
+    .formTitle {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      height: 22px;
+    }
+
+    .infoIndex {
+      color: rgba(0, 0, 0, 45%);
+      font-size: 14px;
+    }
+
+    .info {
+      font-size: 14px;
+    }
+  }
+}
+
+.routeInfoDrawer {
+  .part {
+    padding: 16px;
+
+    .btnIcon {
+      color: rgba(0, 0, 0, 45%);
+
+      &:hover {
+        color: rgba(0, 104, 250, 100%);
+      }
+    }
+  }
+}
+
+.tourAddNode {
+  width: 296px;
+}

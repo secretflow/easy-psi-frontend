@@ -1,0 +1,246 @@
+.home {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  background-size: cover;
+}
+
+.homeBg {
+  background-image: url('../../../assets/edge.svg');
+}
+
+.header-link {
+  text-decoration: none;
+}
+
+.header-items {
+  display: flex;
+  width: 100%;
+  height: 56px;
+  align-items: center;
+
+  .left {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding-left: 16px;
+
+    svg {
+      padding-right: 16px;
+      // border-right: 1px solid rgb(0 10 26 / 16%);
+    }
+
+    .subTitle {
+      margin-left: 16px;
+      color: rgb(0 0 0 / 85%);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .line {
+      width: 1px;
+      height: 12px;
+      margin: 14px;
+      margin: 0 24px;
+      background-color: rgb(0 10 26 / 16%);
+    }
+
+    .myNodeTitle {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      width: 188px;
+      background-color: rgba(255, 255, 255, 50%);
+      border-radius: 4px;
+      font-weight: 400;
+      font-size: 14px;
+      color: rgba(0, 0, 0, 85%);
+      cursor: default;
+
+      svg {
+        border: none !important;
+        padding-right: 4px;
+        padding-left: 14px;
+      }
+
+      .nodeName {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        max-width: 115px;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 24px;
+    // color: rgba(0,0,0,0.85);
+
+    .community {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 85%);
+
+      svg {
+        margin-right: 4px;
+        font-size: 16px;
+      }
+    }
+
+    .line {
+      width: 1px;
+      height: 12px;
+      background-color: rgb(0 10 26 / 16%);
+      margin: 0 24px;
+    }
+
+    .help {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      padding-right: 0;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 85%);
+
+      svg {
+        margin-right: 4px;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.header {
+  height: 56px;
+}
+
+.content {
+  width: 100%;
+  height: 500px;
+  box-sizing: border-box;
+  flex: 1;
+  padding: 0 4px 12px;
+  overflow-y: auto;
+}
+
+.contentNotScroll {
+  overflow: hidden !important;
+}
+
+.tourMyNode {
+  width: 282px;
+  height: 100px;
+
+  :global(.ant-tour-description) {
+    display: flex;
+    justify-content: center;
+  }
+
+  inset: 56px auto auto 286.109px !important;
+}
+
+.nodePopover {
+  :global(.ant-popover-content) {
+    width: 100% !important;
+  }
+}
+
+.myNodePopover {
+  width: 100%;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 65%);
+
+  :global(.ant-typography) {
+    font-size: 14px;
+  }
+
+  .editIcon {
+    margin-left: 4px;
+
+    &:hover {
+      color: rgba(0, 104, 250, 100%);
+    }
+  }
+
+  .ellipsisText {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .name {
+    .ellipsisText();
+
+    max-width: 220px;
+    opacity: 0.85;
+    font-weight: 500;
+    font-size: 16px;
+    color: #000a1a;
+    line-height: 24px;
+  }
+
+  .nodeId {
+    .ellipsisText();
+
+    height: 20px;
+    width: 220px;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(0, 10, 26, 47%);
+    line-height: 20px;
+  }
+
+  .nodeContentLine {
+    margin: 16px 0;
+  }
+
+  .publicKey {
+    font-weight: 400;
+    font-size: 14px;
+    color: rgba(0, 10, 26, 89%);
+    letter-spacing: 0;
+    line-height: 22px;
+  }
+
+  .address {
+    margin: 16px 0;
+    margin-bottom: 0;
+    height: 22px;
+    font-weight: 400;
+    font-size: 14px;
+    color: rgba(0, 10, 26, 89%);
+    letter-spacing: 0;
+    line-height: 22px;
+    word-break: break-all;
+  }
+
+  div {
+    margin: 4px 0;
+  }
+}
+
+.headerDropdown {
+  height: 22px;
+  min-width: 109px;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(0, 10, 26, 89%);
+  letter-spacing: 0;
+  line-height: 22px;
+}
+
+.headerBlob {
+  font-weight: 600;
+}
