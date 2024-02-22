@@ -4,7 +4,7 @@
     "dev": "umi dev",
     "preview": "umi preview",
     "build": "umi build",
-    "bootstrap": "pnpm install && pnpm run setup",
+    "bootstrap": "pnpm install",
     "postinstall": "umi setup",
     "setup": "umi setup",
     "start": "pnpm run dev",
