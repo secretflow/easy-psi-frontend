@@ -28,14 +28,12 @@ declare namespace API {
   interface CreateNodeRequest {
     /** certTxt */
     certText?: string;
-    /** NodeId */
-    dstNodeId?: string;
-    /** 本方通讯地址 */
-    srcNetAddress?: string;
     /** dstNetAddress */
     dstNetAddress?: string;
     /** nodeRemark */
     nodeRemark?: string;
+    /** trust */
+    trust?: boolean;
   }
 
   interface CreateProjectJobRequest {
@@ -113,7 +111,7 @@ declare namespace API {
   type DataTableInformationVoDataTableInformation = Record<string, any>;
 
   interface DataVersionVO {
-    secretpadTag?: string;
+    easypsiTag?: string;
     kusciaTag?: string;
     secretflowTag?: string;
   }
@@ -136,6 +134,136 @@ declare namespace API {
   interface DownloadProjectResult {
     /** jobId */
     jobId?: string;
+  }
+
+  interface EasyPsiPageResponse {
+    /** page list */
+    list?: Array<Record<string, any>>;
+    /** total */
+    total?: number;
+  }
+
+  interface EasyPsiPageResponse_ProjectJobListVO_ {
+    /** page list */
+    list?: Array<ProjectJobListVO>;
+    /** total */
+    total?: number;
+  }
+
+  interface EasyPsiResponse {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: Record<string, any>;
+  }
+
+  type EasyPsiResponseEasyPsiResponseStatus = Record<string, any>;
+
+  type EasyPsiResponseStatus = Record<string, any>;
+
+  interface EasyPsiResponse_Boolean_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: boolean;
+  }
+
+  interface EasyPsiResponse_CreateProjectJobVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: CreateProjectJobVO;
+  }
+
+  interface EasyPsiResponse_DataSourceVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: DataSourceVO;
+  }
+
+  interface EasyPsiResponse_DataTableInformationVo_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: DataTableInformationVo;
+  }
+
+  interface EasyPsiResponse_DataVersionVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: DataVersionVO;
+  }
+
+  interface EasyPsiResponse_EasyPsiPageResponse_ProjectJobListVO__ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: EasyPsiPageResponse_ProjectJobListVO_;
+  }
+
+  interface EasyPsiResponse_GrapDataHeaderVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: GrapDataHeaderVO;
+  }
+
+  interface EasyPsiResponse_GrapDataTableVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: GrapDataTableVO;
+  }
+
+  interface EasyPsiResponse_GraphNodeJobLogsVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: GraphNodeJobLogsVO;
+  }
+
+  interface EasyPsiResponse_List_NodeRouterVO__ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: Array<NodeRouterVO>;
+  }
+
+  interface EasyPsiResponse_List_ProjectJobListByBlackScreenVO__ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: Array<ProjectJobListByBlackScreenVO>;
+  }
+
+  interface EasyPsiResponse_List_ProjectJobVO__ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: Array<ProjectJobVO>;
+  }
+
+  interface EasyPsiResponse_NodeRouterVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: NodeRouterVO;
+  }
+
+  interface EasyPsiResponse_NodeVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: NodeVO;
+  }
+
+  interface EasyPsiResponse_Object_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: Record<string, any>;
+  }
+
+  interface EasyPsiResponse_ProjectJobVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: ProjectJobVO;
+  }
+
+  interface EasyPsiResponse_String_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: string;
+  }
+
+  interface EasyPsiResponse_UploadNodeResultVO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: UploadNodeResultVO;
+  }
+
+  interface EasyPsiResponse_UserContextDTO_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: UserContextDTO;
+  }
+
+  interface EasyPsiResponse_Void_ {
+    status?: EasyPsiResponseEasyPsiResponseStatus;
+    data?: Record<string, any>;
+  }
+
+  interface FabricLogRequest {
+    /** Log path */
+    logPath?: string;
+    /** Log hash */
+    logHash?: string;
   }
 
   interface GetDataTableInformatinoRequest {
@@ -260,7 +388,9 @@ declare namespace API {
     | 202011913
     | 'PROJECT_LOG_PATH_NOT_EXISTS_ERROR'
     | 202011914
-    | 'PROJECT_JOB_RESULT_HASH_EXPIRED_ERROR';
+    | 'PROJECT_JOB_RESULT_HASH_EXPIRED_ERROR'
+    | 202011915
+    | 'PROJECT_JOB_Config_ERROR';
 
   type KusciaGrpcErrorCode =
     | 202012101
@@ -284,6 +414,8 @@ declare namespace API {
     name?: string;
     /** User password */
     passwordHash?: string;
+    /** Public key */
+    publicKey?: string;
   }
 
   type NodeErrorCode =
@@ -360,13 +492,15 @@ declare namespace API {
     certText?: string;
     /** nodeRemark */
     nodeRemark?: string;
+    /** approved */
+    trust?: boolean;
   }
 
   type OneApiResult_object_ = Record<string, any>;
 
   type OneApiResult_string_ = Record<string, any>;
 
-  interface OrgSecretflowSecretpadServiceModelProjectCreateProjectJobTaskRequest$PsiConfigCreateProjectJobTaskRequestPsiConfig {
+  interface OrgSecretflowEasypsiServiceModelProjectCreateProjectJobTaskRequest$PsiConfigCreateProjectJobTaskRequestPsiConfig {
     nodeId?: string;
     protocolConfig?: CreateProjectJobTaskRequestPsiConfigProtocolConfig;
     inputConfig?: CreateProjectJobTaskRequestPsiConfigInputConfig;
@@ -377,8 +511,9 @@ declare namespace API {
     disableAlignment?: boolean;
     recoveryConfig?: CreateProjectJobTaskRequestPsiConfigRecoveryConfig;
     advancedJoinType?: JobConstantsAdvancedJoinTypeEnum;
-    outputDifference?: boolean;
-    datatableCount?: string;
+    leftSide?: string;
+    dataTableConfirmation?: boolean;
+    dataTableCount?: string;
   }
 
   type OutputConfig = Record<string, any>;
@@ -413,6 +548,27 @@ declare namespace API {
     gmtFinished?: string;
   }
 
+  interface ProjectJobListByBlackScreenVO {
+    /** Job id */
+    jobId?: string;
+    /** name */
+    name?: string;
+    /** srcNodeId */
+    srcNodeId?: string;
+    /** dstNodeId */
+    dstNodeId?: string;
+    /** operation */
+    operation?: Array<GraphJobOperation>;
+    /** Job status */
+    status?: GraphJobStatus;
+    /** Job start time */
+    gmtCreate?: string;
+    /** Job finish time */
+    gmtFinished?: string;
+    /** Job error message */
+    errMsg?: string;
+  }
+
   interface ProjectJobListVO {
     /** Job id */
     jobId?: string;
@@ -440,6 +596,8 @@ declare namespace API {
     initiatorDataTableInformation?: DataTableInformationVoDataTableInformation;
     /** DataTableInformation */
     partnerdstDataTableInformation?: DataTableInformationVoDataTableInformation;
+    /** dataTableConfirmation */
+    dataTableConfirmation?: boolean;
   }
 
   interface ProjectJobVO {
@@ -491,119 +649,6 @@ declare namespace API {
     routerId?: string;
   }
 
-  interface SecretPadPageResponse {
-    /** page list */
-    list?: Array<Record<string, any>>;
-    /** total */
-    total?: number;
-  }
-
-  interface SecretPadPageResponse_ProjectJobListVO_ {
-    /** page list */
-    list?: Array<ProjectJobListVO>;
-    /** total */
-    total?: number;
-  }
-
-  interface SecretPadResponse {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: Record<string, any>;
-  }
-
-  type SecretPadResponseSecretPadResponseStatus = Record<string, any>;
-
-  type SecretPadResponseStatus = Record<string, any>;
-
-  interface SecretPadResponse_Boolean_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: boolean;
-  }
-
-  interface SecretPadResponse_CreateProjectJobVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: CreateProjectJobVO;
-  }
-
-  interface SecretPadResponse_DataSourceVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: DataSourceVO;
-  }
-
-  interface SecretPadResponse_DataTableInformationVo_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: DataTableInformationVo;
-  }
-
-  interface SecretPadResponse_DataVersionVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: DataVersionVO;
-  }
-
-  interface SecretPadResponse_GrapDataHeaderVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: GrapDataHeaderVO;
-  }
-
-  interface SecretPadResponse_GrapDataTableVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: GrapDataTableVO;
-  }
-
-  interface SecretPadResponse_GraphNodeJobLogsVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: GraphNodeJobLogsVO;
-  }
-
-  interface SecretPadResponse_List_NodeRouterVO__ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: Array<NodeRouterVO>;
-  }
-
-  interface SecretPadResponse_List_ProjectJobVO__ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: Array<ProjectJobVO>;
-  }
-
-  interface SecretPadResponse_NodeRouterVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: NodeRouterVO;
-  }
-
-  interface SecretPadResponse_NodeVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: NodeVO;
-  }
-
-  interface SecretPadResponse_ProjectJobVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: ProjectJobVO;
-  }
-
-  interface SecretPadResponse_SecretPadPageResponse_ProjectJobListVO__ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: SecretPadPageResponse_ProjectJobListVO_;
-  }
-
-  interface SecretPadResponse_String_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: string;
-  }
-
-  interface SecretPadResponse_UploadNodeResultVO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: UploadNodeResultVO;
-  }
-
-  interface SecretPadResponse_UserContextDTO_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: UserContextDTO;
-  }
-
-  interface SecretPadResponse_Void_ {
-    status?: SecretPadResponseSecretPadResponseStatus;
-    data?: Record<string, any>;
-  }
-
   interface StopProjectJobTaskRequest {
     /** Job id, it can not be blank */
     jobId?: string;
@@ -621,18 +666,21 @@ declare namespace API {
     | 202011105
     | 'HTTP_5XX_ERROR';
 
+  interface UpdateNodeRequest {
+    /** nodeId */
+    nodeId?: string;
+    /** approval */
+    trust: boolean;
+  }
+
   interface UpdateNodeRouterRequest {
     /** routerId */
     routerId?: string;
-    /** srcNetAddress */
-    srcNetAddress?: string;
     /** dstNetAddress */
     dstNetAddress?: string;
   }
 
   interface UploadNodeResultVO {
-    /** Node id */
-    nodeId?: string;
     /** Certificate */
     certificate?: string;
   }
@@ -669,5 +717,7 @@ declare namespace API {
     newPasswordHash?: string;
     /** User confirm password */
     confirmPasswordHash?: string;
+    /** Public key */
+    publicKey?: string;
   }
 }

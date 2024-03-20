@@ -131,6 +131,34 @@
       }
     }
 
+    .initiatorHdd {
+      color: rgba(0, 104, 250, 100%);
+      margin-right: 4px;
+    }
+
+    .partnerHdd {
+      color: rgba(19, 168, 168, 100%);
+      margin-right: 4px;
+    }
+
+    .join {
+      display: flex;
+      align-items: center;
+
+      .joinName {
+        color: rgba(0, 10, 26, 88%);
+      }
+    }
+
+    .advancedDescriptions {
+      display: flex;
+      align-items: center;
+
+      .title {
+        margin: 0;
+      }
+    }
+
     .close {
       :global {
         .ant-descriptions-header {
@@ -144,6 +172,14 @@
     }
 
     .advancedConfig {
+      .flexContent {
+        display: flex;
+      }
+
+      .outputDifferenceTitle {
+        margin-right: 4px;
+      }
+
       :global {
         .ant-descriptions-header {
           margin-bottom: 12px;
@@ -155,7 +191,7 @@
           }
         }
 
-        .ant-descriptions-row:nth-child(3) {
+        .ant-descriptions-row:last-child {
           .ant-descriptions-item {
             padding-bottom: 0;
           }
@@ -177,10 +213,24 @@
   }
 }
 
+.warningMsg {
+  font-weight: 500;
+  font-size: 16px;
+}
+
 .successAlert {
   background-color: rgba(236, 253, 243, 100%);
   border: 1px solid #a5ebc2;
   color: rgba(0, 0, 0, 88%);
+
+  .successMsg {
+    margin-right: 24px;
+  }
+
+  .logSuccess {
+    margin-right: 6px;
+    display: inline-block;
+  }
 
   :global(.ant-alert-icon) {
     color: #24b55f;
@@ -191,6 +241,10 @@
   background-color: rgba(255, 241, 240, 100%);
   border: 1px solid #ffa39e;
   color: rgba(0, 0, 0, 88%);
+
+  .errMsg {
+    margin-right: 24px;
+  }
 
   :global(.ant-alert-icon) {
     color: #fc7574;
@@ -237,4 +291,16 @@
   margin-top: 8px;
   margin-bottom: -8px;
   text-align: right;
+}
+
+.dataTableCount {
+  margin-right: 5px;
+}
+
+.rejectTitle {
+  font-weight: 400;
+}
+
+.rejectTextArea {
+  width: 301px;
 }

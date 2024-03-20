@@ -1,15 +1,16 @@
+import { useState } from 'react';
+import { Badge, Popconfirm, Space, Switch, Tooltip, message } from 'antd';
 import { NodeRoute, NodeState } from '@/modules/node';
-
-import styles from './index.less';
 import { EllipsisText } from '@/components/text-ellipsis';
-import { Badge, Space, Tooltip, message } from 'antd';
 import { DeleteOutlined, EditOutlined, ReloadOutlined } from '@ant-design/icons';
 import { confirmDelete } from '@/components/confirm-delete';
+import styles from './index.less';
 
-export const NodeRouteItemRender = (props: {
+export const NodeListItemRender = (props: {
   node: NodeRoute;
   refreshNodeRoute: (routeId: string) => Promise<API.NodeRouterVO>;
   deleteNodeRoute: (routeId: string, nodeId: string) => void;
+  updateNodeRoute: (nodeId: string, trust: boolean) => void;
   openNodeRouteInfoDrawer: (route: NodeRoute) => void;
   openEditNodeDrawer: (node: NodeRoute) => void;
 }) => {
@@ -17,9 +18,13 @@ export const NodeRouteItemRender = (props: {
     node,
     deleteNodeRoute,
     refreshNodeRoute,
+    updateNodeRoute,
     openNodeRouteInfoDrawer,
     openEditNodeDrawer,
   } = props;
+
+  const [openPopconfirm, setOpenPopconfirm] = useState(false);
+  const [trustConfirmLoading, setTrustConfigLoading] = useState(false);
 
   return (
     <Tooltip
@@ -27,11 +32,7 @@ export const NodeRouteItemRender = (props: {
       trigger={'hover'}
       title={
         node.status === NodeState.FAILED || node.status === NodeState.UNKNOWN ? (
-          <div
-            style={{
-              width: 260,
-            }}
-          >
+          <div className={styles.tooltipTitle}>
             <div>节点不可用原因可能有：</div>
             <div>1.对方不在线，需提醒对方打开平台</div>
             <div>2.配置信息错误</div>
@@ -41,8 +42,8 @@ export const NodeRouteItemRender = (props: {
       }
     >
       <div className={styles.routeItem}>
-        <div style={{ display: 'flex', alignItems: 'start' }}>
-          <div style={{ marginRight: 8 }}>
+        <div className={styles.item}>
+          <div className={styles.statusIcon}>
             {node.status === NodeState.SUCCEEDED && (
               <Badge key={'green'} color={'rgb(35, 182, 95)'} text="" />
             )}
@@ -53,7 +54,7 @@ export const NodeRouteItemRender = (props: {
             {node.status === NodeState.PENDING && <Badge status="default" />}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <div className={styles.itemInfo}>
             <div className={styles.routeHeaderLayout}>
               <div onClick={() => openNodeRouteInfoDrawer(node)}>
                 <EllipsisText width={220} className={styles.routeName}>
@@ -141,6 +142,47 @@ export const NodeRouteItemRender = (props: {
                   </div>
                 )}
               </Space>
+            </div>
+            <div className={styles.routeDescription}>
+              <Popconfirm
+                open={openPopconfirm}
+                onOpenChange={(open) => {
+                  if (!open) setOpenPopconfirm(false);
+                }}
+                title={
+                  <div className={styles.popconfirmTitle}>
+                    {node.dstNode?.trust
+                      ? '关闭后该节点的任务请求将需要审核，确定要关闭吗？'
+                      : '开启后该节点的任务请求将直接通过，确定要开启吗？'}
+                  </div>
+                }
+                onConfirm={async () => {
+                  if (node.dstNode && node.dstNodeId && node.routeId) {
+                    setTrustConfigLoading(true);
+                    await updateNodeRoute(node.dstNodeId, !node.dstNode.trust);
+                    await refreshNodeRoute(node.routeId);
+                    setTrustConfigLoading(false);
+                  }
+                }}
+                okButtonProps={{ loading: trustConfirmLoading }}
+                okText={node.dstNode?.trust ? '关闭' : '开启'}
+                cancelText="取消"
+                placement="leftTop"
+                arrow={{ pointAtCenter: true }}
+              >
+                <Space>
+                  <>
+                    信任节点:
+                    <Switch
+                      checked={node.dstNode?.trust}
+                      size="small"
+                      onClick={() => {
+                        setOpenPopconfirm(true);
+                      }}
+                    />
+                  </>
+                </Space>
+              </Popconfirm>
             </div>
             {/* <div className={styles.routeDescription}>
             <Space>

@@ -63,7 +63,7 @@ export const NodeRouteInfoDrawer = () => {
           」详情
         </div>
       }
-      extra={<CloseOutlined style={{ fontSize: 12 }} onClick={close} />}
+      extra={<CloseOutlined onClick={close} />}
       footer={
         <Button
           danger
@@ -84,7 +84,6 @@ export const NodeRouteInfoDrawer = () => {
           删除
         </Button>
       }
-      footerStyle={{ display: 'flex', justifyContent: 'end' }}
     >
       <div className={styles.subTitle}>合作节点基本信息</div>
       <div className={styles.part}>
@@ -144,6 +143,13 @@ export const NodeRouteInfoDrawer = () => {
               </Typography.Link>
             </span>
           </div>
+
+          <div>
+            <span className={styles.infoIndex}>信任节点：</span>
+            <span className={styles.infoText}>
+              {routeInfo.dstNode?.trust ? '开启' : '关闭'}
+            </span>
+          </div>
         </Space>
       </div>
       <div className={styles.subTitle}>双方合作信息</div>
@@ -187,7 +193,7 @@ export const NodeRouteInfoDrawer = () => {
                       if (res) setRouteInfo(res);
                     }
                   }}
-                  style={{ padding: '4px 0' }}
+                  className={styles.refresh}
                 >
                   刷新
                 </Button>

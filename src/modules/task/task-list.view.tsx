@@ -81,12 +81,8 @@ export const TaskListComponent = () => {
   const ref = useRef(null);
   const steps: TourProps['steps'] = [
     {
-      title: <span style={{ fontWeight: 400 }}>🎉发起任务成功</span>,
-      description: (
-        <span style={{ color: 'rgba(255,255,255,0.85)' }}>
-          这里可以查看任务的进度哦～
-        </span>
-      ),
+      title: <span className={styles.stepTitle}>🎉发起任务成功</span>,
+      description: <span className={styles.stepDesc}>这里可以查看任务的进度哦～</span>,
       target: () => ref.current,
       nextButtonProps: { children: '知道了' },
     },
@@ -102,7 +98,7 @@ export const TaskListComponent = () => {
             <Tooltip title={record.name}>
               <Typography.Link
                 ellipsis={true}
-                style={{ maxWidth: 120 }}
+                className={styles.taskName}
                 onClick={() => {
                   history.push({
                     pathname: '/task-details',
@@ -113,9 +109,7 @@ export const TaskListComponent = () => {
                 {record.name}
               </Typography.Link>
             </Tooltip>
-            <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>
-              ID: {record.jobId}
-            </div>
+            <div className={styles.taskId}>ID: {record.jobId}</div>
           </>
         );
       },
@@ -138,12 +132,11 @@ export const TaskListComponent = () => {
 
     {
       title: (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className={styles.status}>
           <>状态</>
           <Button
             type="link"
             icon={<ReloadOutlined />}
-            style={{ paddingRight: 0 }}
             onClick={() => {
               clearTimeout(viewInstance.timer);
               viewInstance.getTaskList();
@@ -188,7 +181,6 @@ export const TaskListComponent = () => {
               type="primary"
               steps={steps}
               closeIcon={false}
-              zIndex={100000000}
               rootClassName={styles.tourTask}
               placement="top"
             />
@@ -226,6 +218,7 @@ export const TaskListComponent = () => {
             agreeData={{
               initiatorDataTableInformation: record?.initiatorDataTableInformation,
               partnerdstDataTableInformation: record?.partnerdstDataTableInformation,
+              dataTableConfirmation: record?.dataTableConfirmation,
             }}
           />
         );
@@ -240,6 +233,15 @@ export const TaskListComponent = () => {
     fetchTaskList();
   }, [viewInstance.nodeService.currentNode]);
 
+  useEffect(() => {
+    return () => {
+      if (viewInstance.timer) {
+        clearTimeout(viewInstance.timer);
+        viewInstance.timer = 0;
+      }
+    };
+  }, []);
+
   return (
     <div className={styles.taskList}>
       <div className={styles.header}>
@@ -247,7 +249,7 @@ export const TaskListComponent = () => {
         <Space size={20}>
           <Select
             defaultValue={'all'}
-            style={{ width: 120 }}
+            className={styles.select}
             onChange={(e) =>
               viewInstance.filterByStatus(e as keyof typeof statusSelectOptionMap)
             }
@@ -255,9 +257,9 @@ export const TaskListComponent = () => {
           />
 
           <Input
+            className={styles.input}
             placeholder="搜索任务名/节点名称"
             suffix={<SearchOutlined />}
-            style={{ color: 'rgba(0,10,26,0.26)' }}
             onChange={(e) => viewInstance.searchTask(e)}
           />
 
@@ -267,7 +269,7 @@ export const TaskListComponent = () => {
               history.push('/task');
             }}
           >
-            发起任务{' '}
+            发起任务
           </Button>
         </Space>
       </div>
@@ -313,13 +315,6 @@ export class TaskListView extends Model {
   search: string | undefined;
   sortKey: string | undefined;
   sortType: 'ASC' | 'DESC' | undefined;
-
-  onViewUnMount(): void {
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = 0;
-    }
-  }
 
   async searchTask(e: ChangeEvent<HTMLInputElement>) {
     this.search = e.target.value;
@@ -454,14 +449,12 @@ export class TaskListView extends Model {
     } catch (e) {
       if ((e as Error).message === 'PROJECT_DATA_NOT_EXISTS_ERROR') {
         notification.warning({
-          message: (
-            <div style={{ fontWeight: 500, fontSize: 16 }}>请确认数据表路径地址</div>
-          ),
+          message: <div className={styles.warningMsg}>请确认数据表路径地址</div>,
           description: `请将文件放到${this.nodeService.nodePath} 路径下`,
         });
       } else if ((e as Error).message === 'PROJECT_DATA_HEADER_NOT_EXISTS_ERROR') {
         notification.warning({
-          message: <div style={{ fontWeight: 500, fontSize: 16 }}>请确认关联键</div>,
+          message: <div className={styles.warningMsg}>请确认关联键</div>,
           description: `关联键不存在`,
         });
       } else {

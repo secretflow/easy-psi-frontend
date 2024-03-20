@@ -24,6 +24,21 @@
   box-sizing: border-box;
   border: 1px solid #f7f8fa;
 
+  .item {
+    display: flex;
+    align-items: start;
+
+    .statusIcon {
+      margin-right: 8px;
+    }
+
+    .itemInfo {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
   .routeHeaderLayout {
     display: flex;
     justify-content: space-between;
@@ -59,6 +74,14 @@
     font-size: 12px;
     margin: 2px 0;
   }
+}
+
+.popconfirmTitle {
+  width: 238px;
+}
+
+.tooltipTitle {
+  width: 260px;
 }
 
 .addNodeDrawer {
@@ -98,11 +121,34 @@
     padding: 16px 16px 1px;
     margin: 8px 0 24px;
 
+    .nodePublicKey {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+
+      .publicKeyLeft {
+        span {
+          color: rgba(0, 0, 0, 45%);
+        }
+      }
+    }
+
+    .uploadItem {
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
     :global(.ant-form-item) {
       margin-bottom: 16px;
 
       label {
         width: 100%;
+      }
+    }
+
+    .dstNetAdd {
+      :global(.ant-form-item-label > label::after) {
+        margin-inline: 0 0;
       }
     }
 
@@ -112,6 +158,12 @@
       justify-content: space-between;
       align-items: center;
       height: 22px;
+
+      :global {
+        .ant-btn-link {
+          padding: 0;
+        }
+      }
     }
 
     .infoIndex {
@@ -123,9 +175,22 @@
       font-size: 14px;
     }
   }
+
+  .notice {
+    color: rgba(0, 0, 0, 45%);
+  }
+
+  :global(.ant-drawer-extra) {
+    font-size: 12px;
+  }
 }
 
 .routeInfoDrawer {
+  :global(.ant-drawer-footer) {
+    display: flex;
+    justify-content: end;
+  }
+
   .part {
     padding: 16px;
 
@@ -136,6 +201,10 @@
         color: rgba(0, 104, 250, 100%);
       }
     }
+  }
+
+  .refresh {
+    padding: 4px 0;
   }
 }
 

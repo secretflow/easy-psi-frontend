@@ -37,14 +37,15 @@ export interface NodeServiceProtocol {
   /**
    * 添加节点合作
    * @param info
+   * @returns dstNodeId
    */
   addNodeRoute(info: {
     certText: string;
     dstNetAddress: string;
-    dstNodeId: string;
+    trust: boolean;
     nodeRemark?: string;
     srcNetAddress: string;
-  }): Promise<void>;
+  }): Promise<string | undefined>;
 
   /**
    * 删除节点合作

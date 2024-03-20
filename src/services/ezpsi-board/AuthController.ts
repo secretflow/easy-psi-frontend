@@ -2,10 +2,20 @@
 // 该文件由 OneAPI 自动生成，请勿手动修改！
 import request from 'umi-request';
 
+/** query user info
+@return successful EasyPsiResponse with user name
+ POST /api/get */
+export async function get(options?: { [key: string]: any }) {
+  return request<API.EasyPsiResponse_UserContextDTO_>('/api/get', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
 /** User login api
 @param response http servlet response
 @param request login request
-@return successful SecretPadResponse with token
+@return successful EasyPsiResponse with token
  POST /api/login */
 export async function login(
   params: {
@@ -16,7 +26,7 @@ export async function login(
   body?: API.LoginRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_UserContextDTO_>('/api/login', {
+  return request<API.EasyPsiResponse_UserContextDTO_>('/api/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +43,7 @@ export async function login(
 
 /** User logout api
 @param request http servlet request
-@return {@link SecretPadResponse }<{@link String }>
+@return {@link EasyPsiResponse }<{@link String }>
  POST /api/logout */
 export async function logout(
   params: {
@@ -43,7 +53,7 @@ export async function logout(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_String_>('/api/logout', {
+  return request<API.EasyPsiResponse_String_>('/api/logout', {
     method: 'POST',
     params: {
       ...params,

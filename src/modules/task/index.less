@@ -9,6 +9,32 @@
       font-size: 18px;
       font-weight: 500;
     }
+
+    .select {
+      width: 120px;
+    }
+
+    .input {
+      color: rgba(0, 10, 26, 26%);
+    }
+  }
+
+  .taskName {
+    max-width: 120px;
+  }
+
+  .taskId {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 45%);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+
+    :global(.ant-btn-link) {
+      padding-right: 0;
+    }
   }
 
   // .body {
@@ -17,4 +43,35 @@
 
 .tourTask {
   width: 296px;
+
+  .stepTitle {
+    font-weight: 400;
+  }
+
+  .stepDesc {
+    color: rgba(255, 255, 255, 85%);
+  }
+}
+
+.warningMsg {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.taskAction {
+  .btn {
+    padding: 0;
+  }
+}
+
+.dataTableCount {
+  margin-right: 5px;
+}
+
+.rejectTextArea {
+  width: 301px;
+}
+
+.rejectTitle {
+  font-weight: 400;
 }

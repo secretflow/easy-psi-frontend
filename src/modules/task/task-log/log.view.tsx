@@ -6,6 +6,8 @@ import { LogView } from './task-log-drawer';
 
 import './monaco-log';
 
+import styles from './index.less';
+
 export const Log: React.FC = () => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [logEditor] = useState<LogEditor>(new LogEditor());
@@ -33,7 +35,7 @@ export const Log: React.FC = () => {
     }
   };
 
-  return <div ref={editorRef} style={{ height: '100%' }} />;
+  return <div ref={editorRef} className={styles.logEditor} />;
 };
 
 export class LogEditor {

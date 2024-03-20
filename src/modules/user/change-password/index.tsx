@@ -1,49 +1,56 @@
-import { Form, Input, Modal, message } from 'antd';
+import { Form, Input, Modal, message, Alert } from 'antd';
 import { useEffect, useState } from 'react';
+import { logout } from '@/services/ezpsi-board/AuthController';
 
-import { LoginService } from '@/modules/login/login.service';
-import { useModel } from '@/util/valtio-helper';
-import API from '@/services/ezpsi-board';
+import { UserService } from '@/modules/user/user.service';
+import { DefaultModalManager } from '@/modules/modal-manager';
+
+import { useModel, getModel } from '@/util/valtio-helper';
 import { history } from 'umi';
 
 import styles from './index.less';
 
-interface IChangePasswordModal {
-  visible: boolean;
-  close: () => void;
-}
-
-export const ChangePasswordModal = ({ visible, close }: IChangePasswordModal) => {
-  const loginService = useModel(LoginService);
+export const ChangePasswordModal = () => {
+  const userService = useModel(UserService);
   const [form] = Form.useForm();
   const values = Form.useWatch([], form);
+
+  const modalManager = useModel(DefaultModalManager);
+  const modal = modalManager.modals[changePasswordModal.id];
+
+  const { visible, close } = modal;
 
   const [disabled, setDisabled] = useState(true);
 
   const handleOk = async () => {
     await form.validateFields().then(async (value) => {
-      const status = await loginService.resetUserPwd(
-        loginService?.userInfo?.name as string,
-        value.currentPassword,
-        value.newPassword,
-        value.verifiedNewPassword,
-      );
-      if (status?.code === 0) {
-        message.success('账户密码修改成功');
-        close();
-        await API.AuthController.logout(
-          {},
-          {
-            name: loginService?.userInfo?.name,
-          },
+      try {
+        const status = await userService.resetUserPwd(
+          userService?.userInfo?.name as string,
+          value.currentPassword,
+          value.newPassword,
+          value.verifiedNewPassword,
         );
-        history.push('/login');
-      } else {
-        message.error(status?.msg);
-        const codeList = [202012001, 202012002, 202012003, 202011601];
-        if (codeList.findIndex((i) => i === status?.code) === -1) {
-          close();
+        if (status?.code === 0) {
+          message.success('账户密码修改成功');
+          close?.();
+          await logout(
+            {},
+            {
+              name: userService?.userInfo?.name,
+            },
+          );
+          userService.userInfo = null;
+          history.push('/login');
+        } else {
+          message.error(status?.msg);
+          const codeList = [202012001, 202012002, 202012003, 202011601];
+          if (codeList.findIndex((i) => i === status?.code) === -1) {
+            close?.();
+          }
         }
+      } catch (e) {
+        message.error('账户密码修改失败');
       }
     });
   };
@@ -70,8 +77,16 @@ export const ChangePasswordModal = ({ visible, close }: IChangePasswordModal) =>
       onOk={handleOk}
       okButtonProps={{ disabled }}
       wrapClassName={styles.password}
+      zIndex={1002}
     >
-      <div className={styles.name}>账号名：{loginService?.userInfo?.name}</div>
+      {userService.userInfo?.initial && (
+        <Alert
+          message="为了您的账号安全，请修改初始密码；否则无法正常使用。"
+          type="warning"
+          showIcon
+        />
+      )}
+      <div className={styles.name}>账号名：{userService?.userInfo?.name}</div>
       <Form form={form} preserve={false} layout="vertical" requiredMark={false}>
         <Form.Item
           label="当前密码"
@@ -144,3 +159,11 @@ export const ChangePasswordModal = ({ visible, close }: IChangePasswordModal) =>
     </Modal>
   );
 };
+
+export const changePasswordModal = {
+  id: 'change-password',
+  visible: false,
+  data: {},
+};
+
+getModel(DefaultModalManager).registerModal(changePasswordModal);

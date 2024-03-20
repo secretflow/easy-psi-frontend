@@ -1,55 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// import { useEffect } from 'react';
-// import { Navigate, Outlet } from 'umi';
+import { useEffect } from 'react';
+import { Outlet } from 'umi';
 
-// import { LoginService } from '@/modules/login/login.service';
-// import { useModel } from '@/util/valtio-helper';
-
-// // 在这里控制是不是第一次进入平台
-// const BeginnerAuth = () => {
-//   const loginService = useModel(LoginService);
-
-//   const neverLogined = localStorage.getItem('neverLogined');
-//   if (!neverLogined) {
-//     localStorage.setItem('neverLogined', 'true');
-//     return <Navigate to="/login" />;
-//   }
-
-//   // 获取用户信息
-//   const getUserInfo = async () => {
-//     await loginService.getUserInfo();
-//   };
-
-//   useEffect(() => {
-//     if (neverLogined) {
-//       getUserInfo();
-//     }
-//   }, []);
-
-//   return <Outlet />;
-// };
-
-// export default BeginnerAuth;
-
-import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation } from 'umi';
-
-import { LoginService } from '@/modules/login/login.service';
-import API from '@/services/ezpsi-board';
+import { UserService } from '@/modules/user';
+import { get } from '@/services/ezpsi-board/NodeController';
 import { useModel } from '@/util/valtio-helper';
 import { NodeService } from '@/modules/node/node.service';
 import { message } from 'antd';
+import API from '@/services/ezpsi-board';
 
 const UserAuth = () => {
-  const loginService = useModel(LoginService);
+  const userService = useModel(UserService);
   const nodeService = useModel(NodeService);
-  // const [canOutlet, setCanOutlet] = useState(true);
-  // const { pathname } = useLocation();
 
   const getUserInfo = async () => {
-    await loginService.getUserInfo();
-    const { noviceUser, platformNodeId } = loginService?.userInfo || {};
-    const { data, status } = await API.NodeController.get({ nodeId: platformNodeId });
+    await userService.getUserInfo();
+    const { platformNodeId } = userService?.userInfo || {};
+    const { data, status } = await get({ nodeId: platformNodeId });
     const { data: pathData, status: pathStatus } =
       await API.DataController.queryHostPath();
 
@@ -64,21 +30,12 @@ const UserAuth = () => {
     } else {
       message.error(pathStatus?.msg || '获取节点文件路径失败');
     }
-    // if (noviceUser) {
-    //   //用户是新手则跳转guide页面
-    //   setCanOutlet(false);
-    // }
   };
-
   useEffect(() => {
     getUserInfo();
   }, []);
 
-  // if (canOutlet || pathname === '/guide' || pathname === '/task') {
   return <Outlet />;
-  // } else {
-  //   return <Navigate to="/guide" />;
-  // }
 };
 
 export default UserAuth;

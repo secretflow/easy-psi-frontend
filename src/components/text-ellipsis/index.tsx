@@ -1,5 +1,6 @@
 import { Typography } from 'antd';
 import React from 'react';
+import styles from './index.less';
 
 interface IProps {
   children?: React.ReactNode;
@@ -40,7 +41,7 @@ export const EllipsisMiddle: React.FC<{ suffixCount: number; children: string }>
     suffix = children?.slice(-suffixCount)?.trim();
   }
   return (
-    <Text style={{ width: '100%' }} ellipsis={{ suffix, tooltip: children }}>
+    <Text className={styles.text} ellipsis={{ suffix, tooltip: children }}>
       {start}
     </Text>
   );

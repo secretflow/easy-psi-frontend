@@ -42,7 +42,10 @@ export const SubmitButton = ({
   const [startTaskDisabled, setStartTaskDisabled] = useState(true);
 
   const showPopconfirm = () => {
-    setOpenPopconfirm(true);
+    // 如果开启了数据量二次确认，则显示气泡
+    if (dataTableConfirmation) {
+      setOpenPopconfirm(true);
+    }
     setSubmitLoading(true);
   };
 
@@ -59,6 +62,12 @@ export const SubmitButton = ({
 
   // Watch all values
   const values = Form.useWatch([], form);
+
+  // 是否开启数据量二次确认
+  const dataTableConfirmation: boolean = Form.useWatch(
+    ['advancedConfig', 'dataTableConfirmation'],
+    form,
+  );
 
   useEffect(() => {
     const validate = () => {
@@ -112,6 +121,7 @@ export const SubmitButton = ({
         ...values,
         advancedConfig: {
           ...values.advancedConfig,
+          leftSide: values.advancedConfig.leftSide || values.initiatorConfig.nodeId,
           protocolConfig: {
             ...values.advancedConfig.protocolConfig,
             ...handleProtocolConfig(),
@@ -127,17 +137,25 @@ export const SubmitButton = ({
         search: `taskId=${res.jobId}`,
       });
       setOpenPopconfirm(false);
+      setSubmitLoading(false);
     } catch (e) {
+      setOpenPopconfirm(false);
+      setSubmitLoading(false);
       message.error((e as Error).message);
     }
   };
 
   useEffect(() => {
     if (submitLoading) {
-      getDataCountInformation();
-      setStartTaskDisabled(true);
+      if (dataTableConfirmation) {
+        getDataCountInformation();
+        setStartTaskDisabled(true);
+      } else {
+        // 无需数据量二次确认，直接发起任务
+        startTask();
+      }
     }
-  }, [submitLoading]);
+  }, [submitLoading, dataTableConfirmation]);
 
   // 数据量二次确认
   const getDataCountInformation = () => {
@@ -169,7 +187,6 @@ export const SubmitButton = ({
       placement="right"
       open={openPopconfirm}
       onOpenChange={handleOpenChange}
-      className={styles.countConfirm}
       title={
         <>
           <div>
