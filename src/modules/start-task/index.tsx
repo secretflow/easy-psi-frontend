@@ -3,7 +3,6 @@ import {
   HddFilled,
   DownOutlined,
   UpOutlined,
-  QuestionCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import styles from './index.less';
@@ -20,15 +19,12 @@ import {
   Switch,
   Row,
   Col,
-  Tooltip,
   message,
   InputNumber,
 } from 'antd';
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { history } from 'umi';
-import { ReactComponent as Intersection } from '@/assets/intersection.svg';
-import { ReactComponent as DifferenceSet } from '@/assets/differenceSet.svg';
 import { AddNodeDrawer, addNodeDrawer, NodeRoute } from '@/modules/node';
 import { useModel } from '@/util/valtio-helper';
 import { DefaultModalManager } from '@/modules/modal-manager';
@@ -75,9 +71,12 @@ export const StartTaskLayout = () => {
   const [disabledPartner, setDisabledPartner] = useState(true);
   const [disabledInitiator, setDisabledInitiator] = useState(false);
   const [disabledSkipDuplicatesCheck, setDisabledSkipDuplicatesCheck] = useState(false);
+  const [disableDataTableConfirmation, setDisableDataTableConfirmation] =
+    useState(false);
 
   useEffect(() => {
-    const getPartnerStatus = async () => {
+    // 当合作方节点发生改变时，获取合作方节点的stauts与trust信息
+    const getPartnerInfo = async () => {
       if (selectedPartner) {
         const route = nodeRouteList.find((r) => r.dstNodeId === selectedPartner);
         if (!route) {
@@ -90,6 +89,11 @@ export const StartTaskLayout = () => {
           routerId: route.routeId,
         });
         if (status?.code === 0) {
+          if (data?.dstNode?.trust === true) {
+            setDisableDataTableConfirmation(true);
+          } else {
+            setDisableDataTableConfirmation(false);
+          }
           if (data?.status === 'Succeeded') {
             setNodeRouteErrorVisible(false);
             setSelectedPartnerEnabled(true);
@@ -108,7 +112,7 @@ export const StartTaskLayout = () => {
       setSelectedPartnerEnabled(true);
       return;
     };
-    getPartnerStatus();
+    getPartnerInfo();
     setDisabledPartner(!selectedPartner);
   }, [selectedPartner]);
 
@@ -142,6 +146,11 @@ export const StartTaskLayout = () => {
       ['outputConfig', 'broadcastResult'],
       [viewInstance.nodeService.currentNode?.nodeId],
     );
+
+    form.setFieldValue(
+      ['advancedConfig', 'leftSide'],
+      viewInstance.nodeService.currentNode?.nodeId,
+    );
     const getDataTableOptions = async () => {
       const { data, status } = await API.ProjectController.getDataTable({});
       if (status?.code !== 0) {
@@ -161,22 +170,9 @@ export const StartTaskLayout = () => {
           return {
             value: route.dstNodeId!,
             label: (
-              <div style={{ display: 'flex' }}>
-                <HddFilled
-                  style={{
-                    color: 'rgba(19,168,168,1)',
-                    marginRight: '4px',
-                  }}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                  }}
-                >
-                  <>{route.dstNodeId}</>
-                </div>
+              <div className={styles.flexContent}>
+                <HddFilled className={styles.partnerHdd} />
+                <div className={styles.routeDstNodeId}>{route.dstNodeId}</div>
               </div>
             ),
           };
@@ -192,7 +188,8 @@ export const StartTaskLayout = () => {
   }, [viewInstance.nodeService.currentNode]);
 
   useEffect(() => {
-    if (outputDifference || joinType === 'ADVANCED_JOIN_TYPE_INNER_JOIN') {
+    // 当用户选择所有join之外的选项时，结果获取方强制为双方
+    if (outputDifference || joinType !== 'ADVANCED_JOIN_TYPE_UNSPECIFIED') {
       form.setFieldValue(
         ['outputConfig', 'broadcastResult'],
         [
@@ -205,6 +202,11 @@ export const StartTaskLayout = () => {
     } else {
       setDisabledPartner(!selectedPartner);
       setDisabledInitiator(false);
+      // 求交方式切换为join时 结果获取方默认为发起方
+      form.setFieldValue(
+        ['outputConfig', 'broadcastResult'],
+        [viewInstance.nodeService.currentNode?.nodeId],
+      );
     }
   }, [outputDifference, joinType, selectedPartner]);
 
@@ -217,22 +219,9 @@ export const StartTaskLayout = () => {
           return {
             value: route.dstNodeId!,
             label: (
-              <div style={{ display: 'flex' }}>
-                <HddFilled
-                  style={{
-                    color: 'rgba(19,168,168,1)',
-                    marginRight: '4px',
-                  }}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                  }}
-                >
-                  <>{route.dstNodeId}</>
-                </div>
+              <div className={styles.flexContent}>
+                <HddFilled className={styles.partnerHdd} />
+                <div className={styles.routeDstNodeId}>{route.dstNodeId}</div>
               </div>
             ),
           };
@@ -248,7 +237,8 @@ export const StartTaskLayout = () => {
   };
 
   useEffect(() => {
-    if (outputDifference || joinType === 'ADVANCED_JOIN_TYPE_INNER_JOIN') {
+    // 当用户选择所有join之外的选项时，重复值检查将会被强制跳过
+    if (outputDifference || joinType !== 'ADVANCED_JOIN_TYPE_UNSPECIFIED') {
       form.setFieldValue(['advancedConfig', 'skipDuplicatesCheck'], false);
       setDisabledSkipDuplicatesCheck(true);
     } else {
@@ -259,13 +249,13 @@ export const StartTaskLayout = () => {
   return (
     <div className={styles.taskContent}>
       <div className={styles.header}>
-        <ArrowLeftOutlined onClick={() => history.push('/')} />
+        <ArrowLeftOutlined onClick={() => history.push('/home')} />
         <span className={styles.headerText}>发起任务</span>
       </div>
       <div className={styles.card}>
         <Card>
           <Form layout="vertical" form={form} requiredMark="optional">
-            <div style={{ display: 'flex', marginBottom: '28px' }}>
+            <div className={styles.taskInfo}>
               <Form.Item
                 label="任务名称"
                 name="name"
@@ -278,25 +268,20 @@ export const StartTaskLayout = () => {
                   },
                 ]}
               >
-                <Input
-                  style={{ width: 380 }}
-                  placeholder="名称可由中文/英文/中划线/下划线组成，长度限制32"
-                />
+                <Input placeholder="名称可由中文/英文/中划线/下划线组成，长度限制32" />
               </Form.Item>
               <Form.Item
                 label="备注"
                 name="description"
                 rules={[{ type: 'string', max: 100, message: '任务备注过长' }]}
-                style={{ marginLeft: '28px' }}
+                className={styles.subForm}
               >
-                <Input style={{ width: 380 }} placeholder="100个字符内" />
+                <Input placeholder="100个字符内" />
               </Form.Item>
             </div>
             {/* 节点数据配置 */}
             <div className={styles.dataPage}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}
-              >
+              <div className={styles.flexTitle}>
                 <Title level={5}>发起方节点数据</Title>
                 <Alert
                   message={`请将你的文件放在目录：${viewInstance.nodeService.nodePath}`}
@@ -311,23 +296,17 @@ export const StartTaskLayout = () => {
                   rules={[{ required: true, message: '请输入发起方' }]}
                 >
                   <Input
-                    style={{ width: 380 }}
                     disabled
-                    prefix={
-                      <HddFilled
-                        style={{ color: 'rgba(0,104,250,1)', marginRight: '4px' }}
-                      />
-                    }
+                    prefix={<HddFilled className={styles.initiatorHdd} />}
                   />
                 </Form.Item>
                 <Form.Item
                   label="数据表"
                   name={['initiatorConfig', 'path']}
-                  style={{ marginLeft: '28px' }}
+                  className={styles.subForm}
                   rules={[{ required: true, message: '请选择数据表' }]}
                 >
                   <Select
-                    style={{ width: 380 }}
                     placeholder="请选择"
                     options={dataTableOptions}
                     showSearch
@@ -342,11 +321,10 @@ export const StartTaskLayout = () => {
                 <Form.Item
                   label="关联键"
                   name={['initiatorConfig', 'keys']}
-                  style={{ marginLeft: '28px' }}
+                  className={styles.subForm}
                   rules={[{ required: true, message: '请选择关联键' }]}
                 >
                   <Select
-                    style={{ width: 380 }}
                     placeholder="请选择"
                     mode="multiple"
                     options={joinKeyOptions}
@@ -360,15 +338,7 @@ export const StartTaskLayout = () => {
                   />
                 </Form.Item>
               </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '16px',
-                  marginTop: 43,
-                }}
-              >
+              <div className={classNames(styles.flexTitle, styles.partnerTitle)}>
                 <Title level={5}>合作方节点数据</Title>
                 {nodeRouteErrorVisible ? (
                   <Alert
@@ -385,7 +355,7 @@ export const StartTaskLayout = () => {
                   />
                 )}
               </div>
-              <div style={{ display: 'flex', marginBottom: '16px' }}>
+              <div className={styles.partner}>
                 <Form.Item
                   label="合作方"
                   name={['partnerConfig', 'nodeId']}
@@ -393,16 +363,9 @@ export const StartTaskLayout = () => {
                   rules={[{ required: true, message: '请选择合作方' }]}
                 >
                   <Select
-                    style={{ width: 380 }}
                     placeholder={
                       <>
-                        {' '}
-                        <HddFilled
-                          style={{
-                            color: 'rgba(19,168,168,1)',
-                            marginRight: '4px',
-                          }}
-                        />
+                        <HddFilled className={styles.partnerHdd} />
                         请选择合作节点
                       </>
                     }
@@ -428,7 +391,7 @@ export const StartTaskLayout = () => {
                 <Form.Item
                   label="数据表"
                   name={['partnerConfig', 'path']}
-                  style={{ marginLeft: '28px' }}
+                  className={styles.subForm}
                   rules={[
                     { required: true, message: '请选择数据表' },
                     {
@@ -437,15 +400,12 @@ export const StartTaskLayout = () => {
                     },
                   ]}
                 >
-                  <Input
-                    style={{ width: 380 }}
-                    placeholder="请输入数据表名（xxx.csv）"
-                  />
+                  <Input placeholder="请输入数据表名（xxx.csv）" />
                 </Form.Item>
                 <Form.Item
                   label="关联键"
                   name={['partnerConfig', 'keys']}
-                  style={{ marginLeft: '28px' }}
+                  className={styles.subForm}
                   normalize={(val) => {
                     return val.split(',');
                   }}
@@ -454,18 +414,18 @@ export const StartTaskLayout = () => {
                     { pattern: /^[^,]+(,[^,]+)*$/ },
                   ]}
                 >
-                  <Input style={{ width: 380 }} placeholder="多个字段用“,”隔开" />
+                  <Input placeholder="多个字段用“,”隔开" />
                 </Form.Item>
               </div>
             </div>
             {/* 结果配置 */}
             <div className={styles.resultPage}>
               <Title level={5}>结果配置</Title>
-              <div style={{ display: 'flex' }}>
+              <div className={styles.flexContent}>
                 <Form.Item
                   label="结果名称"
                   name={['outputConfig', 'path']}
-                  style={{ marginBottom: 0 }}
+                  className={styles.bottomStyle}
                   rules={[
                     { required: true, message: '请输入结果名称' },
                     { type: 'string', max: 32, message: '结果名称过长' },
@@ -475,25 +435,20 @@ export const StartTaskLayout = () => {
                     },
                   ]}
                 >
-                  <Input
-                    style={{ width: 380 }}
-                    placeholder="请输入结果名（xxx.csv），长度限制32"
-                  />
+                  <Input placeholder="请输入结果名（xxx.csv），长度限制32" />
                 </Form.Item>
                 <Form.Item
                   label="结果获取方"
                   name={['outputConfig', 'broadcastResult']}
-                  style={{ marginLeft: '28px', marginBottom: 0 }}
+                  className={classNames(styles.subForm, styles.bottomStyle)}
                   rules={[{ required: true, message: '请选择结果获取方' }]}
                 >
                   <Checkbox.Group
                     options={[
                       {
                         label: (
-                          <div style={{ display: 'flex' }}>
-                            <HddFilled
-                              style={{ color: 'rgba(0,104,250,1)', marginRight: '4px' }}
-                            />
+                          <div className={styles.flexContent}>
+                            <HddFilled className={styles.initiatorHdd} />
                             <div>
                               {viewInstance.nodeService.currentNode?.nodeId || ''}
                             </div>
@@ -505,13 +460,8 @@ export const StartTaskLayout = () => {
                       },
                       {
                         label: (
-                          <div style={{ display: 'flex' }}>
-                            <HddFilled
-                              style={{
-                                color: 'rgba(19,168,168,1)',
-                                marginRight: '4px',
-                              }}
-                            />
+                          <div className={styles.flexContent}>
+                            <HddFilled className={styles.partnerHdd} />
                             <div>{selectedPartner || ''}</div>
                           </div>
                         ),
@@ -525,9 +475,7 @@ export const StartTaskLayout = () => {
             </div>
             {/* 高级配置 */}
             <div className={styles.advancedConfig}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}
-              >
+              <div className={styles.flexTitle}>
                 <Title level={5}>高级配置</Title>
                 {configStatus ? (
                   <div
@@ -548,12 +496,12 @@ export const StartTaskLayout = () => {
                 )}
               </div>
               <div className={classNames(configStatus ? '' : styles.close)}>
-                <Row style={{ marginBottom: '16px' }}>
+                <Row className={styles.rowBottom}>
                   <Col span={8}>
                     <Form.Item
                       label="隐私求交协议"
                       name={['advancedConfig', 'protocolConfig', 'protocol']}
-                      style={{ marginBottom: 0 }}
+                      className={styles.bottomStyle}
                       initialValue={'PROTOCOL_ECDH'}
                       rules={[{ required: true, message: '请选择隐私求交协议' }]}
                     >
@@ -564,7 +512,7 @@ export const StartTaskLayout = () => {
                           { value: 'PROTOCOL_RR22', label: 'RR22' },
                           // { value: 'ECDH_OPRF_UB', label: 'ECDH_OPRF_UB（非平衡）' },
                         ]}
-                        style={{ width: '200px' }}
+                        className={styles.advancedSelect}
                       />
                     </Form.Item>
                   </Col>
@@ -584,7 +532,7 @@ export const StartTaskLayout = () => {
                               'ecdhConfig',
                               'curve',
                             ]}
-                            style={{ marginBottom: 0 }}
+                            className={styles.bottomStyle}
                             initialValue={'CURVE_25519'}
                             rules={[{ required: true, message: '请选择ECDH曲线类型' }]}
                             dependencies={[
@@ -604,7 +552,7 @@ export const StartTaskLayout = () => {
                                   label: 'CURVE_25519_ELLIGATOR2',
                                 },
                               ]}
-                              style={{ width: '200px' }}
+                              className={styles.advancedSelect}
                             />
                           </Form.Item>
                         ) : (
@@ -625,7 +573,7 @@ export const StartTaskLayout = () => {
                                     'bucketSize',
                                   ]
                             }
-                            style={{ marginBottom: 0 }}
+                            className={styles.bottomStyle}
                             required
                             dependencies={[
                               'advancedConfig',
@@ -634,7 +582,10 @@ export const StartTaskLayout = () => {
                             ]}
                             initialValue={1048576}
                           >
-                            <InputNumber min={10000} style={{ width: '200px' }} />
+                            <InputNumber
+                              min={10000}
+                              className={styles.advancedSelect}
+                            />
                           </Form.Item>
                         )
                       }
@@ -657,7 +608,7 @@ export const StartTaskLayout = () => {
                             ]}
                             label="低通信模式"
                             rules={[{ required: true }]}
-                            style={{ marginBottom: 0 }}
+                            className={styles.bottomStyle}
                             tooltip="当双方通信状况不佳时，请打开该开关"
                             initialValue={false}
                             valuePropName={'checked'}
@@ -674,54 +625,91 @@ export const StartTaskLayout = () => {
                     </Form.Item>
                   </Col>
                 </Row>
-                <Row justify="space-between" style={{ marginBottom: '16px' }}>
+                <Row className={styles.rowBottom}>
                   <Col span={8}>
                     <Form.Item
                       label="求交方式"
                       name={['advancedConfig', 'advancedJoinType']}
-                      style={{ marginBottom: 0 }}
+                      className={styles.bottomStyle}
                       initialValue={'ADVANCED_JOIN_TYPE_UNSPECIFIED'}
                       rules={[{ required: true, message: '请选择求交方式' }]}
                     >
-                      <Radio.Group>
-                        <Radio value="ADVANCED_JOIN_TYPE_UNSPECIFIED">
+                      <Select
+                        options={[
                           {
-                            <>
-                              <span style={{ marginRight: '8px' }}>join</span>
-                              <Tooltip title="不可有重复数据，否则会运行错误">
-                                <QuestionCircleOutlined
-                                  style={{
-                                    cursor: 'pointer',
-                                    color: 'rgba(0,0,0,0.45)',
-                                  }}
-                                />
-                              </Tooltip>
-                            </>
-                          }
-                        </Radio>
-                        <Radio value={'ADVANCED_JOIN_TYPE_INNER_JOIN'}>
+                            value: 'ADVANCED_JOIN_TYPE_UNSPECIFIED',
+                            label: 'join（关联键不允许重复）',
+                          },
                           {
-                            <>
-                              <span style={{ marginRight: '8px' }}>inner_join</span>
-                              <Tooltip title="可以有重复数据">
-                                <QuestionCircleOutlined
-                                  style={{
-                                    cursor: 'pointer',
-                                    color: 'rgba(0,0,0,0.45)',
-                                  }}
-                                />
-                              </Tooltip>
-                            </>
-                          }
-                        </Radio>
-                      </Radio.Group>
+                            value: 'ADVANCED_JOIN_TYPE_INNER_JOIN',
+                            label: 'inner join（允许关联键重复）',
+                          },
+                          {
+                            value: 'ADVANCED_JOIN_TYPE_LEFT_JOIN',
+                            label: 'left join（允许关联键重复）',
+                          },
+                          {
+                            value: 'ADVANCED_JOIN_TYPE_RIGHT_JOIN',
+                            label: 'right join（允许关联键重复）',
+                          },
+                          {
+                            value: 'ADVANCED_JOIN_TYPE_FULL_JOIN',
+                            label: 'full join（允许关联键重复）',
+                          },
+                          {
+                            value: 'ADVANCED_JOIN_TYPE_DIFFERENCE',
+                            label: 'difference（允许关联键重复）',
+                          },
+                        ]}
+                        className={styles.advancedSelect}
+                      />
                     </Form.Item>
                   </Col>
+                  {/* 左方 选择left join / right join时出现 */}
+                  <Form.Item noStyle shouldUpdate>
+                    {({ getFieldValue }) =>
+                      getFieldValue(['advancedConfig', 'advancedJoinType']) ===
+                        'ADVANCED_JOIN_TYPE_LEFT_JOIN' ||
+                      getFieldValue(['advancedConfig', 'advancedJoinType']) ===
+                        'ADVANCED_JOIN_TYPE_RIGHT_JOIN' ? (
+                        <Col span={8}>
+                          <Form.Item
+                            label="左方"
+                            name={['advancedConfig', 'leftSide']}
+                            className={styles.bottomStyle}
+                            rules={[{ required: true, message: '请选择左方' }]}
+                          >
+                            <Radio.Group>
+                              <Radio
+                                value={
+                                  viewInstance.nodeService.currentNode?.nodeId ||
+                                  'Option1'
+                                }
+                              >
+                                <div className={styles.flexContent}>
+                                  <HddFilled className={styles.initiatorHdd} />
+                                  <div>
+                                    {viewInstance.nodeService.currentNode?.nodeId || ''}
+                                  </div>
+                                </div>
+                              </Radio>
+                              <Radio value={selectedPartner || 'Option2'}>
+                                <div className={styles.flexContent}>
+                                  <HddFilled className={styles.partnerHdd} />
+                                  <div>{selectedPartner || ''}</div>
+                                </div>
+                              </Radio>
+                            </Radio.Group>
+                          </Form.Item>
+                        </Col>
+                      ) : null
+                    }
+                  </Form.Item>
                   <Col span={8}>
                     <Form.Item
                       label="是否断点续传"
                       name={['advancedConfig', 'recoveryEnabled']}
-                      style={{ marginBottom: 0 }}
+                      className={styles.bottomStyle}
                       tooltip="开启如影响性能，可暂停任务"
                       initialValue={true}
                       valuePropName={'checked'}
@@ -730,11 +718,13 @@ export const StartTaskLayout = () => {
                       <Switch checkedChildren="开" unCheckedChildren="关" />
                     </Form.Item>
                   </Col>
+                </Row>
+                <Row className={styles.rowBottom}>
                   <Col span={8}>
                     <Form.Item
                       label="重复值检查"
                       name={['advancedConfig', 'skipDuplicatesCheck']}
-                      style={{ marginBottom: 0 }}
+                      className={styles.bottomStyle}
                       tooltip="预先输入数据表求交键是否有重复"
                       initialValue={true}
                       dependencies={['advancedConfig', 'outputDifference']}
@@ -748,41 +738,11 @@ export const StartTaskLayout = () => {
                       />
                     </Form.Item>
                   </Col>
-                </Row>
-                <Row>
-                  <Col span={8}>
-                    <Form.Item
-                      label="求交关系"
-                      name={['advancedConfig', 'outputDifference']}
-                      style={{ marginBottom: 0 }}
-                      initialValue={false}
-                      rules={[{ required: true, message: '请选择求交关系' }]}
-                    >
-                      <Radio.Group>
-                        <Radio value={false}>
-                          {
-                            <div style={{ display: 'flex' }}>
-                              <span style={{ marginRight: '4px' }}>交集</span>
-                              <Intersection />
-                            </div>
-                          }
-                        </Radio>
-                        <Radio value={true}>
-                          {
-                            <div style={{ display: 'flex' }}>
-                              <span style={{ marginRight: '4px' }}>差集</span>
-                              <DifferenceSet />
-                            </div>
-                          }
-                        </Radio>
-                      </Radio.Group>
-                    </Form.Item>
-                  </Col>
                   <Col span={8}>
                     <Form.Item
                       label="是否结果重排序"
                       name={['advancedConfig', 'disableAlignment']}
-                      style={{ marginBottom: 0 }}
+                      className={styles.bottomStyle}
                       initialValue={true}
                       rules={[{ required: true, message: '请选择是否结果重排序' }]}
                     >
@@ -798,7 +758,7 @@ export const StartTaskLayout = () => {
                       tooltip="当双方通信状况不佳时，请适当扩大超时"
                       name="nodeCommunicationTimeout"
                       required
-                      style={{ marginBottom: 0 }}
+                      className={styles.bottomStyle}
                       initialValue={'_'}
                     >
                       <Form.Item
@@ -807,11 +767,27 @@ export const StartTaskLayout = () => {
                         initialValue={30}
                         noStyle
                       >
-                        <InputNumber min={30} style={{ width: '98px' }} />
+                        <InputNumber className={styles.advancedInputNumber} min={30} />
                       </Form.Item>
-                      <span className="ant-form-text" style={{ marginLeft: 4 }}>
-                        s
-                      </span>
+                      <span className="ant-form-text">s</span>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={8}>
+                    <Form.Item
+                      label="数据量级检查"
+                      name={['advancedConfig', 'dataTableConfirmation']}
+                      className={styles.bottomStyle}
+                      initialValue={false}
+                      valuePropName={'checked'}
+                      required
+                    >
+                      <Switch
+                        disabled={disableDataTableConfirmation}
+                        checkedChildren="开"
+                        unCheckedChildren="关"
+                      />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -834,9 +810,9 @@ export const StartTaskLayout = () => {
                 condition={selectedPartnerEnabled}
               />
               <Button
-                style={{ marginLeft: '11px' }}
+                className={styles.cancelBtn}
                 size="large"
-                onClick={() => history.push('/')}
+                onClick={() => history.push('/home')}
               >
                 取消
               </Button>

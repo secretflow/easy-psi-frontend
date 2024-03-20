@@ -25,12 +25,13 @@ export class NodeService extends Model implements NodeServiceProtocol {
   async addNodeRoute(info: {
     certText: string;
     dstNetAddress: string;
-    dstNodeId: string;
     nodeRemark?: string;
+    trust: boolean;
     srcNetAddress: string;
-  }): Promise<void> {
-    const { status } = await API.NodeController.createNode({ ...info });
+  }): Promise<string | undefined> {
+    const { status, data } = await API.NodeController.createNode({ ...info });
     if (status?.code !== 0) throw new Error(status?.msg);
+    return data;
   }
   async deleteNodeRoute(routerId: string): Promise<void> {
     const { status } = await API.NodeController.deleteNode({ routerId });
@@ -53,6 +54,11 @@ export class NodeService extends Model implements NodeServiceProtocol {
     if (status?.code !== 0) throw new Error(status?.msg);
 
     this.currentNode.netAddress = val.netAddress;
+  }
+
+  async updateNodeRoute(val: { nodeId: string; trust: boolean }) {
+    const { status } = await API.NodeController.updateNode(val);
+    if (status?.code !== 0) throw new Error(status?.msg);
   }
 
   downloadCertificate(nodeId: string) {

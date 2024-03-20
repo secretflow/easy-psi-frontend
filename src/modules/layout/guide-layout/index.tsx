@@ -5,18 +5,21 @@ import { history } from 'umi';
 import styles from './index.less';
 import classnames from 'classnames';
 import { GuidePipeline } from '@/modules/guide-pipeline/guide-pipeline';
-import { AddNodeDrawer, addNodeDrawer } from '@/modules/node';
+import {
+  AddNodeDrawer,
+  NodeListItemRender,
+  NodeRoute,
+  addNodeDrawer,
+} from '@/modules/node';
 import { useModel, Model, getModel } from '@/util/valtio-helper';
 import { DefaultModalManager } from '@/modules/modal-manager';
-import { NodeRouteItemRender } from './node-route-item';
 import { PlusCircleFilled } from '@ant-design/icons';
 import { GuideTourService, GuideTourKey } from '@/modules/guide-tour';
 import { NodeRouteListView } from '@/modules/node/node-list.view';
 import { NodeRouteInfoDrawer } from '@/modules/node/route-info-drawer';
 import { EditNodeModal } from '@/modules/node/edit-node-modal';
-import API from '@/services/ezpsi-board';
-import { LoginService } from '@/modules/login/login.service';
-import React from 'react';
+import { listJob } from '@/services/ezpsi-board/ProjectController';
+import { UserService } from '@/modules/user';
 
 export const GuideLayout = () => {
   const modalManager = useModel(DefaultModalManager);
@@ -50,9 +53,9 @@ export const GuideLayout = () => {
 
   const addNodeSteps: TourProps['steps'] = [
     {
-      title: <span style={{ fontWeight: 400, fontSize: 16 }}>🎉节点添加成功～</span>,
+      title: <span className={styles.addTitle}>🎉节点添加成功～</span>,
       description: (
-        <span style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+        <span className={styles.addDesc}>
           还需要下载本方「节点公钥」和「通讯地址」并线下告知合作方，以便对方进入平台添加本方节点。
           可点击节点名称查看相关信息。
         </span>
@@ -67,9 +70,7 @@ export const GuideLayout = () => {
 
   const createTaskSteps: TourProps['steps'] = [
     {
-      title: (
-        <span style={{ fontWeight: 400, fontSize: 16 }}>任务是在这里发起哦～</span>
-      ),
+      title: <span className={styles.createTitle}>任务是在这里发起哦～</span>,
       description: null,
       target: () => createTaskRef.current,
       nextButtonProps: { children: '知道了' },
@@ -105,7 +106,9 @@ export const GuideLayout = () => {
           <div className={styles.title}>我的任务</div>
           {/* TODO: Place holder */}
           <div className={styles.empty}>
-            <Empty description={<span style={{ opacity: 0.65 }}>还没有任务哦～</span>}>
+            <Empty
+              description={<span className={styles.emptyDesc}>还没有任务哦～</span>}
+            >
               {viewInstance.nodeRouteList.length ? (
                 <Button
                   type="primary"
@@ -135,20 +138,20 @@ export const GuideLayout = () => {
               <div className={styles.listContainer}>
                 {viewInstance.nodeRouteList.map((node, index) => (
                   <div ref={index === 0 ? addNodeRef : null} key={node.routeId}>
-                    <NodeRouteItemRender
+                    <NodeListItemRender
                       node={node}
                       key={node.routeId}
-                      deleteNodeRoute={() =>
-                        viewInstance.deleteNodeRoute(
-                          node.routeId as string,
-                          node.dstNodeId as string,
-                        )
+                      deleteNodeRoute={(routeId: string, nodeId: string) =>
+                        viewInstance.deleteNodeRoute(routeId, nodeId)
                       }
-                      openNodeRouteInfoDrawer={() => {
-                        viewInstance.openNodeRouteInfoDrawer(node);
-                      }}
-                      refreshNodeRoute={() =>
-                        viewInstance.refreshNodeRoute(node.routeId as string)
+                      updateNodeRoute={(nodeId: string, trust: boolean) =>
+                        viewInstance.updateNodeRoute(nodeId, trust)
+                      }
+                      openNodeRouteInfoDrawer={(route: NodeRoute) =>
+                        viewInstance.openNodeRouteInfoDrawer(route)
+                      }
+                      refreshNodeRoute={(routeId: string) =>
+                        viewInstance.refreshNodeRoute(routeId)
                       }
                       openEditNodeDrawer={() => {
                         viewInstance.openEditModal(node, () => {
@@ -181,7 +184,6 @@ export const GuideLayout = () => {
           mask={false}
           type="primary"
           closeIcon={false}
-          zIndex={100000000}
           onFinish={() => guideService.finish(GuideTourKey.GuidAddNodeRouteTour)}
           rootClassName={styles.tourAddNode}
         />
@@ -192,7 +194,6 @@ export const GuideLayout = () => {
           mask={false}
           type="primary"
           closeIcon={false}
-          zIndex={100000000}
           onFinish={() => guideService.finish(GuideTourKey.GuidCreateTaskTour)}
           rootClassName={styles.createTaskNode}
         />
@@ -205,7 +206,7 @@ export const GuideLayout = () => {
 
 export class GuideLayoutView extends Model {
   timer: ReturnType<typeof setTimeout> | 0 = 0;
-  loginService = getModel(LoginService);
+  userService = getModel(UserService);
 
   onViewUnMount(): void {
     if (this.timer) {
@@ -215,8 +216,8 @@ export class GuideLayoutView extends Model {
   }
 
   pollingTaskList = async () => {
-    const { data } = await API.ProjectController.listJob({
-      nodeId: this.loginService?.userInfo?.ownerId,
+    const { data } = await listJob({
+      nodeId: this.userService?.userInfo?.ownerId,
       pageNum: 1,
       pageSize: 1,
     });
@@ -231,7 +232,7 @@ export class GuideLayoutView extends Model {
       }
       message.success('合作节点发起任务，请记得审核');
       setTimeout(() => {
-        history.push('/');
+        history.push('/home');
       }, 1000);
     }
   };

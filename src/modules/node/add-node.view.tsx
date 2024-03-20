@@ -11,6 +11,8 @@ import {
   Tag,
   FormInstance,
   Alert,
+  Switch,
+  Segmented,
 } from 'antd';
 import { useState, useEffect } from 'react';
 import { history } from 'umi';
@@ -37,10 +39,14 @@ export const AddNodeDrawer = () => {
 
   const { visible, close } = modal;
 
+  const { TextArea } = Input;
+
   const [form] = Form.useForm();
   const [tokenTestStatus, setTokenTestStatus] = useState<
     keyof typeof tokenTestSuffix | undefined
   >();
+
+  const [publicKeyMethod, setPublicKeyMethod] = useState<'input' | 'upload'>('input');
 
   const SubmitButton = ({ form, text }: { form: FormInstance; text: string }) => {
     const [submittable, setSubmittable] = useState(false);
@@ -89,7 +95,6 @@ export const AddNodeDrawer = () => {
             const { data, status } = JSON.parse(xhr.response);
             if (status.code === 0) {
               form.setFieldsValue({
-                dstNodeId: data.nodeId,
                 certText: data.certificate,
               });
               if (option.onSuccess) option.onSuccess(xhr.response);
@@ -151,7 +156,7 @@ export const AddNodeDrawer = () => {
         className={styles.addNodeDrawer}
         closeIcon={false}
         title={<div className={styles.title}>添加合作节点</div>}
-        extra={<CloseOutlined style={{ fontSize: 12 }} onClick={close} />}
+        extra={<CloseOutlined onClick={close} />}
         destroyOnClose
       >
         <Form
@@ -162,8 +167,8 @@ export const AddNodeDrawer = () => {
           onFinish={async (val) => {
             try {
               if (close) close();
-              await nodeService.addNodeRoute(val);
-              message.success(`「${val.dstNodeId}」节点添加成功`);
+              const dstNodeId = await nodeService.addNodeRoute(val);
+              message.success(`「${dstNodeId}」节点添加成功`);
               await viewInstance.getNodeRouteList();
             } catch (e) {
               message.error((e as Error).message);
@@ -180,57 +185,63 @@ export const AddNodeDrawer = () => {
             />
           </div>
           <div className={styles.part}>
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ marginBottom: 8 }}>
+            <div className={styles.nodePublicKey}>
+              <div className={styles.publicKeyLeft}>
                 节点公钥
-                <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>
-                  （仅支持上传1个文件）
-                </span>
+                <span>（仅支持上传1个文件）</span>
               </div>
-              <Upload {...uploadProps}>
+              <Segmented
+                size="small"
+                options={[
+                  {
+                    label: '输入',
+                    value: 'input',
+                  },
+                  {
+                    label: '上传',
+                    value: 'upload',
+                  },
+                ]}
+                value={publicKeyMethod}
+                onChange={setPublicKeyMethod}
+              />
+            </div>
+            {publicKeyMethod === 'upload' && (
+              <Upload className={styles.uploadItem} {...uploadProps}>
                 <Button icon={<UploadOutlined />} size="small">
                   上传
                 </Button>
               </Upload>
-            </div>
-
+            )}
+            <Form.Item hidden name={'dstNodeId'}></Form.Item>
             <Form.Item
-              hidden
-              name={'dstNodeId'}
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            ></Form.Item>
-
-            <Form.Item
-              hidden
+              hidden={publicKeyMethod === 'upload'}
               name={'certText'}
               rules={[
                 {
                   required: true,
+                  message: '请输入节点公钥',
                 },
               ]}
-            ></Form.Item>
+            >
+              <TextArea
+                placeholder="请输入节点公钥"
+                autoSize={{ minRows: 3, maxRows: 6 }}
+              />
+            </Form.Item>
             <Form.Item
+              className={styles.dstNetAdd}
               name="dstNetAddress"
               label={
                 <div className={styles.formTitle}>
-                  <>节点通讯地址</>{' '}
+                  <>节点通讯地址</>
                   {tokenTestStatus === 'testing' ? (
-                    <Button
-                      type="link"
-                      icon={<LoadingOutlined />}
-                      disabled={true}
-                      style={{ padding: 0 }}
-                    >
+                    <Button type="link" icon={<LoadingOutlined />} disabled={true}>
                       测试中
                     </Button>
                   ) : (
                     <Button
                       type="link"
-                      style={{ padding: 0 }}
                       disabled={!dstNetAddressDisable}
                       onClick={testNodeAddress}
                     >
@@ -285,6 +296,23 @@ export const AddNodeDrawer = () => {
               ]}
             >
               <Input placeholder="名称可由中文/数字/英文/中划线/下划线组成，长度限制32" />
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <>
+                  信任节点
+                  <span className={styles.notice}>
+                    （信任后来自该节点的任务请求将直接通过）
+                  </span>
+                </>
+              }
+              name="trust"
+              initialValue={false}
+              required
+              valuePropName="checked"
+            >
+              <Switch checkedChildren="开" unCheckedChildren="关" />
             </Form.Item>
           </div>
 

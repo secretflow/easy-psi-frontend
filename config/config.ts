@@ -28,6 +28,9 @@ try {
 export default defineConfig({
   routes,
   npmClient: 'pnpm',
+  codeSplitting: {
+    jsStrategy: 'granularChunks',
+  },
   // https: {},
   svgr: {},
   title: 'SecretFlow Easy PSI',

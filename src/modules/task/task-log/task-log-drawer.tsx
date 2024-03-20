@@ -7,6 +7,7 @@ import { Log } from './log.view';
 import { useEffect } from 'react';
 import { TaskService } from '../task.service';
 import { TaskStatus } from '../types';
+import styles from './index.less';
 
 export const TaskLogDrawer = () => {
   const modalManager = useModel(DefaultModalManager);
@@ -42,8 +43,9 @@ export const TaskLogDrawer = () => {
       width={560}
       mask={true}
       closeIcon={false}
-      extra={<CloseOutlined style={{ fontSize: 12 }} onClick={onClose} />}
+      extra={<CloseOutlined onClick={onClose} />}
       destroyOnClose
+      className={styles.logDrawer}
     >
       <Log />
     </Drawer>

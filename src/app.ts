@@ -1,5 +1,10 @@
 import { history } from 'umi';
 import request from 'umi-request';
+import { message } from 'antd';
+
+message.config({
+  maxCount: 1,
+});
 
 request.interceptors.request.use((url, options) => {
   const token = localStorage.getItem('User-Token') || '';

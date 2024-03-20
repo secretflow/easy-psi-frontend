@@ -73,6 +73,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      .emptyDesc {
+        opacity: 0.65;
+      }
     }
 
     .title {
@@ -103,6 +107,21 @@
           margin: 16px 0 4px;
           box-sizing: border-box;
           border: 1px solid #f7f8fa;
+
+          .item {
+            display: flex;
+            align-items: start;
+
+            .statusIcon {
+              margin-right: 8px;
+            }
+
+            .itemInfo {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+            }
+          }
 
           .routeHeaderLayout {
             display: flex;
@@ -173,9 +192,27 @@
 .tourAddNode {
   width: 290px;
   height: 184px;
+
+  .addTitle {
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .addDesc {
+    color: rgba(255, 255, 255, 85%);
+  }
 }
 
 .createTaskNode {
   width: 302px;
   height: 100px;
+
+  .createTitle {
+    font-weight: 400;
+    font-size: 16px;
+  }
+}
+
+.tooltipTitle {
+  width: 260px;
 }

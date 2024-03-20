@@ -20,6 +20,16 @@ export const TaskActionButtons = (props: {
 }) => {
   const { actions, id, name, recoveryEnabled, agreeData } = props;
   const viewInstance = useModel(TaskDetailView);
+
+  // 是否显示数据量确认气泡
+  const showDataConfirm = () => {
+    // 如果没有数据量确认信息，则显示气泡
+    if (typeof agreeData.dataTableConfirmation !== 'boolean') {
+      return true;
+    }
+    return agreeData.dataTableConfirmation;
+  };
+
   const actionList: Record<
     Exclude<TaskAction, TaskAction.LOG | TaskAction.UPLOAD_CERT>,
     {
@@ -77,7 +87,7 @@ export const TaskActionButtons = (props: {
           callback: (id: string, name: string) => void;
         }) => {
           const [openPopconfirm, setOpenPopconfirm] = useState(false);
-          return (
+          return showDataConfirm() ? (
             <Popconfirm
               onOpenChange={(e) => {
                 setOpenPopconfirm(e);
@@ -90,7 +100,7 @@ export const TaskActionButtons = (props: {
                   <div>
                     {agreeData?.initiatorDataTableInformation?.nodeId}：
                     {agreeData?.initiatorDataTableInformation?.dataTableName}，
-                    <span style={{ marginRight: 5 }}>
+                    <span className={styles.dataTableCount}>
                       {
                         TaskDataTableInformationText[
                           agreeData?.initiatorDataTableInformation
@@ -103,7 +113,7 @@ export const TaskActionButtons = (props: {
                   <div>
                     {agreeData?.partnerdstDataTableInformation?.nodeId}：
                     {agreeData?.partnerdstDataTableInformation?.dataTableName}，
-                    <span style={{ marginRight: 5 }}>
+                    <span className={styles.dataTableCount}>
                       {
                         TaskDataTableInformationText[
                           agreeData?.partnerdstDataTableInformation
@@ -159,6 +169,10 @@ export const TaskActionButtons = (props: {
             >
               <Button type="primary">{props.text}</Button>
             </Popconfirm>
+          ) : (
+            <Button type="primary" onClick={() => props.callback(id, name)}>
+              {props.text}
+            </Button>
           );
         },
       },
@@ -174,7 +188,7 @@ export const TaskActionButtons = (props: {
           const [comment, setComment] = useState<string | undefined>();
           return (
             <Popconfirm
-              title={<span style={{ fontWeight: 400 }}>你确定要拒绝吗？</span>}
+              title={<span className={styles.rejectTitle}>你确定要拒绝吗？</span>}
               okButtonProps={{ danger: true, type: 'default' }}
               onOpenChange={(open) => {
                 if (!open) {
@@ -188,7 +202,7 @@ export const TaskActionButtons = (props: {
               placement="leftTop"
               description={
                 <Input.TextArea
-                  style={{ width: 301 }}
+                  className={styles.rejectTextArea}
                   rows={3}
                   placeholder="请输入拒绝理由，可选，50字符以内"
                   maxLength={50}

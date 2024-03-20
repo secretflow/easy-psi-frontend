@@ -7,6 +7,7 @@ import { getModel, useModel, Model } from '@/util/valtio-helper';
 import { ReactNode, useState } from 'react';
 import { TaskService } from '.';
 import { TaskListView } from './task-list.view';
+import styles from './index.less';
 
 // the actions will be return by backend, this is just a mock
 const actionMap: Record<TaskStatus, TaskAction[]> = {
@@ -37,6 +38,16 @@ export const TaskListAction = (props: {
   const [actionExecuting, setActionExecuting] = useState<boolean>(false);
 
   const [rejectMsg, setRejectMsg] = useState<string | undefined>();
+
+  // 是否显示数据量确认气泡
+  const showDataConfirm = () => {
+    // 如果没有数据量确认信息，则显示气泡
+    if (typeof agreeData?.dataTableConfirmation !== 'boolean') {
+      return true;
+    }
+    return agreeData?.dataTableConfirmation;
+  };
+
   const actionList: Record<
     TaskAction,
     {
@@ -66,7 +77,7 @@ export const TaskListAction = (props: {
           placement="leftTop"
           key={`${id}-cancel`}
         >
-          <Button type="link" style={{ padding: 0 }}>
+          <Button type="link" className={styles.btn}>
             取消
           </Button>
         </Popconfirm>
@@ -76,7 +87,7 @@ export const TaskListAction = (props: {
     [TaskAction.AGREE]: {
       text: '同意',
       callback: () => {},
-      render: (
+      render: showDataConfirm() ? (
         <Popconfirm
           destroyTooltipOnHide
           title={
@@ -84,7 +95,7 @@ export const TaskListAction = (props: {
               <div>
                 {agreeData?.initiatorDataTableInformation?.nodeId}：
                 {agreeData?.initiatorDataTableInformation?.dataTableName}，
-                <span style={{ marginRight: 5 }}>
+                <span className={styles.dataTableCount}>
                   {
                     TaskDataTableInformationText[
                       agreeData?.initiatorDataTableInformation
@@ -97,7 +108,7 @@ export const TaskListAction = (props: {
               <div>
                 {agreeData?.partnerdstDataTableInformation?.nodeId}：
                 {agreeData?.partnerdstDataTableInformation?.dataTableName}，
-                <span style={{ marginRight: 5 }}>
+                <span className={styles.dataTableCount}>
                   {
                     TaskDataTableInformationText[
                       agreeData?.partnerdstDataTableInformation
@@ -121,10 +132,20 @@ export const TaskListAction = (props: {
             },
           }}
         >
-          <Button type="link" style={{ padding: 0 }}>
+          <Button type="link" className={styles.btn}>
             同意
           </Button>
         </Popconfirm>
+      ) : (
+        <Button
+          type="link"
+          className={styles.btn}
+          onClick={async () => {
+            await viewInstance.agree(id, name);
+          }}
+        >
+          同意
+        </Button>
       ),
     },
     [TaskAction.REJECT]: {
@@ -132,7 +153,7 @@ export const TaskListAction = (props: {
       callback: () => {},
       render: (
         <Popconfirm
-          title={<span style={{ fontWeight: 400 }}>你确定要拒绝吗？</span>}
+          title={<span className={styles.rejectTitle}>你确定要拒绝吗？</span>}
           okButtonProps={{ danger: true, type: 'default' }}
           onConfirm={async () => {
             setActionExecuting(true);
@@ -148,7 +169,7 @@ export const TaskListAction = (props: {
           placement="leftTop"
           description={
             <Input.TextArea
-              style={{ width: 301 }}
+              className={styles.rejectTextArea}
               rows={3}
               placeholder="请输入拒绝理由，可选，50字符以内"
               maxLength={50}
@@ -158,7 +179,7 @@ export const TaskListAction = (props: {
           }
           key={`${id}-decline`}
         >
-          <Button type="link" danger style={{ padding: 0 }}>
+          <Button type="link" danger className={styles.btn}>
             拒绝
           </Button>
         </Popconfirm>
@@ -194,7 +215,7 @@ export const TaskListAction = (props: {
           placement="leftTop"
           key={`${id}-delete`}
         >
-          <Button type="link" style={{ padding: 0 }} disabled={actionExecuting}>
+          <Button type="link" className={styles.btn} disabled={actionExecuting}>
             删除
           </Button>
         </Popconfirm>
@@ -222,7 +243,7 @@ export const TaskListAction = (props: {
   const actionInfos = actions.map((action) => actionList[action]);
 
   return (
-    <Space>
+    <Space className={styles.taskAction}>
       {actionInfos.map((i, index) => {
         const render = i.render || (
           <Button
@@ -235,7 +256,7 @@ export const TaskListAction = (props: {
             }}
             disabled={actionExecuting}
             key={`${id}-${index}`}
-            style={{ padding: 0 }}
+            className={styles.btn}
             {...(i.props || {})}
           >
             {i.text}

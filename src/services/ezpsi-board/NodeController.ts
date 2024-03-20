@@ -4,13 +4,13 @@ import request from 'umi-request';
 
 /** Create a new node api
 @param request create node request
-@return successful SecretPadResponse with nodeId
+@return successful EasyPsiResponse with nodeId
  POST /api/v1alpha1/node/create */
 export async function createNode(
   body?: API.CreateNodeRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_String_>('/api/v1alpha1/node/create', {
+  return request<API.EasyPsiResponse_String_>('/api/v1alpha1/node/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function deleteNode(
   body?: API.DeleteNodeIdRequest,
   options?: { [key: string]: any },
 ) {
-  return request<API.SecretPadResponse_Void_>('/api/v1alpha1/node/delete', {
+  return request<API.EasyPsiResponse_Void_>('/api/v1alpha1/node/delete', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export async function deleteNode(
 
 /** Download node certificate api
 @param response http servlet response
-@return successful SecretPadResponse with null data
+@return successful EasyPsiResponse with null data
  POST /api/v1alpha1/node/download */
 export async function download(
   params: {
@@ -65,27 +65,42 @@ export async function download(
 
 /** 此处后端没有提供注释 POST /api/v1alpha1/node/get */
 export async function get(options?: { [key: string]: any }) {
-  return request<API.SecretPadResponse_NodeVO_>('/api/v1alpha1/node/get', {
+  return request<API.EasyPsiResponse_NodeVO_>('/api/v1alpha1/node/get', {
     method: 'POST',
+    ...(options || {}),
+  });
+}
+
+/** Update node api
+@param request create node request
+@return successful EasyPsiResponse with nodeId
+ POST /api/v1alpha1/node/update */
+export async function updateNode(
+  body?: API.UpdateNodeRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.EasyPsiResponse_NodeVO_>('/api/v1alpha1/node/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
     ...(options || {}),
   });
 }
 
 /** Upload node certificate api
 @param file multipart file
-@return successful SecretPadResponse with upload certificate result view object
+@return successful EasyPsiResponse with upload certificate result view object
  POST /api/v1alpha1/node/upload */
 export async function upload(files?: File[], options?: { [key: string]: any }) {
   const formData = new FormData();
   if (files) {
     formData.append('file', files[0] || '');
   }
-  return request<API.SecretPadResponse_UploadNodeResultVO_>(
-    '/api/v1alpha1/node/upload',
-    {
-      method: 'POST',
-      data: formData,
-      ...(options || {}),
-    },
-  );
+  return request<API.EasyPsiResponse_UploadNodeResultVO_>('/api/v1alpha1/node/upload', {
+    method: 'POST',
+    data: formData,
+    ...(options || {}),
+  });
 }

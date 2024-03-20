@@ -51,3 +51,23 @@ export async function index4(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+/** index_5 All page requests are returned to this index, and the front end handles page routing
+@return the string
+ GET /home */
+export async function index5(options?: { [key: string]: any }) {
+  return request<API.OneApiResult_string_>('/home', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** index_6 All page requests are returned to this index, and the front end handles page routing
+@return the string
+ GET /auth */
+export async function index6(options?: { [key: string]: any }) {
+  return request<API.OneApiResult_string_>('/auth', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

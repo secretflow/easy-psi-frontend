@@ -1,50 +1,41 @@
 import sha256 from 'crypto-js/sha256';
+import JSEncrypt from 'jsencrypt';
 
-import API from '@/services/ezpsi-board';
+import { login } from '@/services/ezpsi-board/AuthController';
 import { Model } from '@/util/valtio-helper';
+import { getRandomKey } from '@/services/ezpsi-board/EncryptionController';
 
 export class LoginService extends Model {
   userInfo: API.UserContextDTO | null = null;
 
-  constructor() {
-    super();
-    this.getUserInfo();
-  }
-
   async login(loginField: { name: string; password: string }) {
-    const { data, status } = await API.AuthController.login(
-      {},
-      {
-        name: loginField.name,
-        passwordHash: sha256(loginField.password).toString(),
-      },
-    );
+    const publicKey = await this.getPublicKey();
 
-    if (status?.code === 0) this.userInfo = data as API.UserContextDTO;
+    if (publicKey) {
+      const encryptor = new JSEncrypt();
+      encryptor.setPublicKey(publicKey);
 
-    return { status, data };
+      const rsaPassWord = encryptor.encrypt(sha256(loginField.password).toString());
+      if (!rsaPassWord) throw new Error('登录失败');
+
+      const { data, status } = await login(
+        {},
+        {
+          name: loginField.name,
+          passwordHash: rsaPassWord,
+          publicKey,
+        },
+      );
+
+      if (status?.code === 0) this.userInfo = data as API.UserContextDTO;
+
+      return { status, data };
+    }
+    throw new Error('登录失败');
   }
 
-  getUserInfo = async () => {
-    if (!this.userInfo) {
-      const { data } = await API.UserController.get();
-      this.userInfo = data as API.UserContextDTO;
-    }
-    return this.userInfo;
-  };
-
-  resetUserPwd = async (
-    name: string,
-    currentPwd: string,
-    newPwd: string,
-    verifiedNewPwd: string,
-  ) => {
-    const res = await API.UserController.updatePwd({
-      name: name,
-      oldPasswordHash: sha256(currentPwd).toString(),
-      newPasswordHash: sha256(newPwd).toString(),
-      confirmPasswordHash: sha256(verifiedNewPwd).toString(),
-    });
-    return res.status;
-  };
+  async getPublicKey(): Promise<string | undefined> {
+    const { data: publicKey, status } = await getRandomKey();
+    if (status?.code === 0) return publicKey;
+  }
 }

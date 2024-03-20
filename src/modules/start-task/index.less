@@ -29,6 +29,19 @@
   .card {
     margin-top: 14px;
 
+    :global {
+      .ant-input-affix-wrapper,
+      .ant-select,
+      .ant-input {
+        width: 380px;
+      }
+    }
+
+    .taskInfo {
+      display: flex;
+      margin-bottom: 28px;
+    }
+
     .dataPage {
       margin-bottom: 52px;
 
@@ -58,6 +71,15 @@
         :global(.ant-form-item) {
           margin-bottom: 16px;
         }
+      }
+
+      .partnerTitle {
+        margin-top: 43px;
+      }
+
+      .partner {
+        display: flex;
+        margin-bottom: 16px;
       }
     }
 
@@ -91,6 +113,32 @@
         }
       }
 
+      .rowBottom {
+        margin-bottom: 16px;
+      }
+
+      .outputDifferenceTitle {
+        margin-right: 4px;
+      }
+
+      .radioTitle {
+        margin-right: 8px;
+      }
+
+      .advancedSelect {
+        width: 260px;
+      }
+
+      .advancedInputNumber {
+        width: 98px;
+        margin-right: 4px;
+      }
+
+      .questionIcon {
+        cursor: pointer;
+        color: rgba(0, 0, 0, 45%);
+      }
+
       :global {
         .ant-typography {
           margin: 0;
@@ -100,6 +148,44 @@
           margin-right: 46px;
         }
       }
+    }
+
+    .flexContent {
+      display: flex;
+    }
+
+    .flexTitle {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .partnerHdd {
+      color: rgba(19, 168, 168, 100%);
+      margin-right: 4px;
+    }
+
+    .initiatorHdd {
+      color: rgba(0, 104, 250, 100%);
+      margin-right: 4px;
+    }
+
+    .routeDstNodeId {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .subForm {
+      margin-left: 28px;
+    }
+
+    .bottomStyle {
+      margin-bottom: 0;
+    }
+
+    .cancelBtn {
+      margin-left: 11px;
     }
   }
 

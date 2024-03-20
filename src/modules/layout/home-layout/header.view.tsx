@@ -15,6 +15,7 @@ import {
   TourProps,
   Typography,
   theme,
+  message,
 } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, history } from 'umi';
@@ -26,17 +27,19 @@ import { ReactComponent as NodeTour } from '@/assets/nodeTour.svg';
 import ezpsiImgLink from '@/assets/ezpsi.png';
 import ezpsiOfflineImgLink from '@/assets/ezpsi-offline.png';
 
-import { Model, useModel } from '@/util/valtio-helper';
+import { Model, useModel, getModel } from '@/util/valtio-helper';
 import platformConfig from '@/platform.config';
 // import { DefaultModalManager } from '@/modules/modal-manager';
 // import { EditCurrentNodeModal } from '@/modules/node/edit-current-node-modal';
 
 import styles from './index.less';
 import { NodeService } from '@/modules/node/node.service';
-import { LoginService } from '@/modules/login/login.service';
+import { UserService } from '@/modules/user';
 import { getImgLink } from '@/util/platform';
 import classNames from 'classnames';
-import { ChangePasswordModal } from '@/modules/login/component/change-password';
+import { ChangePasswordModal, changePasswordModal } from '@/modules/user';
+import copy from 'copy-to-clipboard';
+import { DefaultModalManager } from '@/modules/modal-manager';
 
 const { useToken } = theme;
 
@@ -49,9 +52,7 @@ const avatarInfo = {
 
 export const HeaderComponent = () => {
   const viewInstance = useModel(HeaderModel);
-  const guideService = useModel(GuideTourService);
-  const nodeService = useModel(NodeService);
-  const loginService = useModel(LoginService);
+  const { guideService, nodeService, userService } = viewInstance;
 
   const [avatarLink, setAvatarLink] = useState('');
 
@@ -67,15 +68,13 @@ export const HeaderComponent = () => {
     boxShadow: 'none',
   };
 
-  // const { userInfo } = loginService;
-
   const ref = useRef(null);
   const steps: TourProps['steps'] = [
     {
       title: (
-        <span style={{ fontWeight: 400 }}>你的节点公钥、节点根目录在这里哦～</span>
+        <span className={styles.stepTitle}>你的节点公钥、节点根目录在这里哦～</span>
       ),
-      description: <NodeTour style={{ marginLeft: '-8px' }} />,
+      description: <NodeTour />,
       target: () => ref.current,
       nextButtonProps: { children: '知道了' },
     },
@@ -87,9 +86,10 @@ export const HeaderComponent = () => {
     await API.AuthController.logout(
       {},
       {
-        name: loginService?.userInfo?.name,
+        name: userService?.userInfo?.name,
       },
     );
+    userService.userInfo = null;
     history.push('/login');
   };
 
@@ -106,11 +106,13 @@ export const HeaderComponent = () => {
   ];
 
   useEffect(() => {
-    if (loginService.userInfo) {
+    if (userService.userInfo) {
       const imgLink = getImgLink(avatarInfo);
       setAvatarLink(imgLink);
+
+      if (userService.userInfo?.initial) viewInstance.showChangePassword();
     }
-  }, [loginService]);
+  }, [userService, userService.userInfo]);
 
   return (
     <div className={styles['header-items']}>
@@ -120,9 +122,6 @@ export const HeaderComponent = () => {
         <span className={styles.line} />
         <Popover
           placement="bottomLeft"
-          overlayInnerStyle={{
-            padding: 16,
-          }}
           zIndex={999}
           overlayClassName={styles.nodePopover}
           content={
@@ -136,12 +135,25 @@ export const HeaderComponent = () => {
               <div className={styles.publicKey}>
                 节点公钥：
                 <Typography.Link
+                  className={styles.publicKeyOperator}
                   onClick={() => {
                     if (nodeService.currentNode?.nodeId)
                       nodeService.downloadCertificate(nodeService.currentNode?.nodeId);
                   }}
                 >
                   下载
+                </Typography.Link>
+                <Typography.Link
+                  onClick={() => {
+                    if (nodeService.currentNode?.certText) {
+                      copy(nodeService.currentNode.certText);
+                      message.success('节点公钥已复制');
+                    } else {
+                      message.error('节点公钥复制失败');
+                    }
+                  }}
+                >
+                  复制
                 </Typography.Link>
               </div>
               {/* <div className={styles.address}>
@@ -198,11 +210,11 @@ export const HeaderComponent = () => {
               }}
               dropdownRender={(menu) => (
                 <div style={contentStyle}>
-                  <Space direction="vertical" style={{ padding: '12px 16px' }}>
+                  <Space direction="vertical" className={styles.version}>
                     <div
                       className={classNames(styles.headerDropdown, styles.headerBlob)}
                     >
-                      产品版本：{viewInstance.version.secretpadTag}
+                      产品版本：{viewInstance.version.easypsiTag}
                     </div>
                     <div className={styles.headerDropdown}>
                       引擎版本：{viewInstance.version.secretflowTag}
@@ -211,12 +223,12 @@ export const HeaderComponent = () => {
                       框架版本：{viewInstance.version.kusciaTag}
                     </div>
                   </Space>
-                  <Divider style={{ margin: 0 }} />
+                  <Divider className={styles.versionDivider} />
                   {React.cloneElement(menu as React.ReactElement, { style: menuStyle })}
                 </div>
               )}
             >
-              <div style={{ cursor: 'pointer' }} onClick={(e) => e.preventDefault()}>
+              <div className={styles.avatar} onClick={(e) => e.preventDefault()}>
                 <Space>
                   {/* <Image
                     width={28}
@@ -231,40 +243,35 @@ export const HeaderComponent = () => {
                     icon={<img width={'100%'} src={avatarInfo.offlineLink} />}
                     src={avatarLink || null}
                   />
-                  <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.85)' }}>
-                    {loginService?.userInfo?.name}
-                  </span>
-                  <CaretDownOutlined
-                    style={{ fontSize: 12, color: 'rgba(0,0,0,0.65)' }}
-                  />
+                  <span className={styles.userName}>{userService?.userInfo?.name}</span>
+                  <CaretDownOutlined />
                 </Space>
               </div>
             </Dropdown>
           </>
           <Tour
-            // open={!guideService.MyNodeTour && pathname === '/guide'}
             open={!guideService.MyNodeTour && pathname === '/guide'}
             steps={steps}
             mask={false}
             type="primary"
             closeIcon={false}
-            zIndex={100000000}
+            // zIndex={100000000}
             onFinish={() => guideService.finish(GuideTourKey.MyNodeTour)}
             rootClassName={styles.tourMyNode}
           />
         </div>
       )}
       {/* <EditCurrentNodeModal /> */}
-      <ChangePasswordModal
-        visible={viewInstance.showChangePasswordModel}
-        close={() => (viewInstance.showChangePasswordModel = false)}
-      />
+      <ChangePasswordModal />
     </div>
   );
 };
 
 export class HeaderModel extends Model {
-  showChangePasswordModel = false;
+  modalManager = getModel(DefaultModalManager);
+  guideService = getModel(GuideTourService);
+  nodeService = getModel(NodeService);
+  userService = getModel(UserService);
 
   constructor() {
     super();
@@ -281,7 +288,7 @@ export class HeaderModel extends Model {
   version: API.DataVersionVO = {
     secretflowTag: '',
     kusciaTag: '',
-    secretpadTag: '',
+    easypsiTag: '',
   };
 
   getVersion = async () => {
@@ -292,6 +299,6 @@ export class HeaderModel extends Model {
   };
 
   showChangePassword = () => {
-    this.showChangePasswordModel = true;
+    this.modalManager.openModal(changePasswordModal.id);
   };
 }

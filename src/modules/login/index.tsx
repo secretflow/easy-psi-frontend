@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { message } from 'antd';
 import React from 'react';
 import { history } from 'umi';
 
 import { ReactComponent as Logo } from '@/assets/logo1.svg';
-import platformConfig from '@/platform.config';
 import { getModel, Model, useModel } from '@/util/valtio-helper';
 
 import { LoginForm } from './component/login-form';
 import type { UserInfo } from './component/login-form';
 import styles from './index.less';
 import { LoginService } from './login.service';
-import API from '@/services/ezpsi-board';
 
 export const LoginComponent: React.FC = () => {
   const loginModel = useModel(LoginModel);
@@ -32,24 +29,28 @@ export class LoginModel extends Model {
   loginService = getModel(LoginService);
 
   loginConfirm = async (loginFields: UserInfo) => {
-    const { status, data } = await this.loginService.login({
-      name: loginFields.name,
-      password: loginFields.password,
-    });
+    try {
+      const { status, data } = await this.loginService.login({
+        name: loginFields.name,
+        password: loginFields.password,
+      });
 
-    this.token = data?.token || '';
-    if (status?.code === 0) {
-      localStorage.setItem('User-Token', this.token);
-      const { noviceUser } = data as API.UserContextDTO;
-      message.success('登录成功');
+      this.token = data?.token || '';
+      if (status?.code === 0) {
+        localStorage.setItem('User-Token', this.token);
+        const { noviceUser } = data as API.UserContextDTO;
+        message.success('登录成功');
 
-      if (!noviceUser) {
-        history.push('/');
+        if (!noviceUser) {
+          history.push('/home');
+        } else {
+          history.push('/guide');
+        }
       } else {
-        history.push('/guide');
+        message.error(status?.msg || '登录失败，请检查用户名或密码');
       }
-    } else {
-      message.error(status?.msg || '登录失败，请检查用户名或密码');
+    } catch (e) {
+      message.error('登录失败');
     }
   };
 }

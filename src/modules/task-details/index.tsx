@@ -23,8 +23,6 @@ import classNames from 'classnames';
 import queryString from 'query-string';
 import { useLocation, history } from 'umi';
 
-import { ReactComponent as Intersection } from '@/assets/intersection.svg';
-import { ReactComponent as DifferenceSet } from '@/assets/differenceSet.svg';
 import taskSuccessLink from '@/assets/ezpsi-success.png';
 import { formatTimestamp, getTimeCost } from '@/util/timestamp-formatter';
 import {
@@ -118,9 +116,9 @@ export const TaskDetailsLayout = () => {
       {
         key: 'initiator',
         label: (
-          <div style={{ alignItems: 'center' }}>
-            <HddFilled style={{ color: 'rgba(0,104,250,1)', marginRight: '4px' }} />
-            <span style={{ color: 'rgba(0,10,26,0.88)' }}>发起方</span>
+          <div className={styles.join}>
+            <HddFilled className={styles.initiatorHdd} />
+            <span className={styles.joinName}>发起方</span>
           </div>
         ),
         children: taskDetail.initiatorConfig?.nodeId,
@@ -138,9 +136,9 @@ export const TaskDetailsLayout = () => {
       {
         key: 'partner',
         label: (
-          <div style={{ alignItems: 'center' }}>
-            <HddFilled style={{ color: 'rgba(19,168,168,1)', marginRight: '4px' }} />
-            <span style={{ color: 'rgba(0,10,26,0.88)' }}>合作方</span>
+          <div className={styles.join}>
+            <HddFilled className={styles.partnerHdd} />
+            <span className={styles.joinName}>合作方</span>
           </div>
         ),
         children: taskDetail.partnerConfig?.nodeId,
@@ -187,15 +185,13 @@ export const TaskDetailsLayout = () => {
           <Space>
             {receivers[0] && (
               <div>
-                <HddFilled style={{ color: 'rgba(0,104,250,1)', marginRight: '4px' }} />
+                <HddFilled className={styles.initiatorHdd} />
                 <span>{receivers[0]}</span>
               </div>
             )}
             {receivers[1] && (
               <div>
-                <HddFilled
-                  style={{ color: 'rgba(19,168,168,1)', marginRight: '4px' }}
-                />
+                <HddFilled className={styles.partnerHdd} />
                 <span>{receivers[1]}</span>
               </div>
             )}
@@ -207,8 +203,12 @@ export const TaskDetailsLayout = () => {
 
   const getAdvancedConfigItems = useCallback(() => {
     const joinType = {
-      ADVANCED_JOIN_TYPE_UNSPECIFIED: 'join',
-      ADVANCED_JOIN_TYPE_INNER_JOIN: 'inner_join',
+      ADVANCED_JOIN_TYPE_UNSPECIFIED: 'join（关联键不允许重复）',
+      ADVANCED_JOIN_TYPE_INNER_JOIN: 'inner_join（允许关联键重复）',
+      ADVANCED_JOIN_TYPE_LEFT_JOIN: 'left join（允许关联键重复）',
+      ADVANCED_JOIN_TYPE_RIGHT_JOIN: 'right join（允许关联键重复）',
+      ADVANCED_JOIN_TYPE_FULL_JOIN: 'full join（允许关联键重复）',
+      ADVANCED_JOIN_TYPE_DIFFERENCE: 'difference（允许关联键重复）',
     };
 
     enum protocolEnum {
@@ -273,6 +273,40 @@ export const TaskDetailsLayout = () => {
       } else return [];
     }, [protocolConfig?.protocol]);
 
+    // 数据量级检查字段
+    const dataTableConfirmation = taskDetail.initiatorConfig?.dataTableConfirmation;
+
+    // 没有dataTableConfirmation字段则不展示
+    const dataConfirmItem =
+      dataTableConfirmation === null
+        ? []
+        : [
+            {
+              key: 'dataTableConfirmation',
+              label: '数据量级检查',
+              children: dataTableConfirmation ? '开' : '关',
+            },
+          ];
+
+    // 左方
+    const leftSide = taskDetail.initiatorConfig?.leftSide;
+
+    const showLeftSide = useMemo(() => {
+      if (
+        taskDetail.initiatorConfig?.advancedJoinType ===
+          'ADVANCED_JOIN_TYPE_LEFT_JOIN' ||
+        taskDetail.initiatorConfig?.advancedJoinType === 'ADVANCED_JOIN_TYPE_RIGHT_JOIN'
+      ) {
+        return [
+          {
+            key: 'leftSide',
+            label: '左方',
+            children: leftSide,
+          },
+        ];
+      } else return [];
+    }, [taskDetail.initiatorConfig?.advancedJoinType, leftSide]);
+
     return [
       {
         key: 'protocol',
@@ -289,6 +323,7 @@ export const TaskDetailsLayout = () => {
               'ADVANCED_JOIN_TYPE_UNSPECIFIED'
           ],
       },
+      ...showLeftSide,
       {
         key: 'recoveryEnabled',
         label: '是否断点续传',
@@ -300,21 +335,6 @@ export const TaskDetailsLayout = () => {
         children: taskDetail.initiatorConfig?.skipDuplicatesCheck ? '是' : '否',
       },
       {
-        key: 'outputDifference',
-        label: '求交关系',
-        children: taskDetail.initiatorConfig?.outputDifference ? (
-          <div style={{ display: 'flex' }}>
-            <span style={{ marginRight: '4px' }}>差集</span>
-            <DifferenceSet />
-          </div>
-        ) : (
-          <div style={{ display: 'flex' }}>
-            <span style={{ marginRight: '4px' }}>交集</span>
-            <Intersection />
-          </div>
-        ),
-      },
-      {
         key: 'disableAlignment',
         label: '是否结果重排序',
         children: taskDetail.initiatorConfig?.disableAlignment ? '是' : '否',
@@ -324,6 +344,7 @@ export const TaskDetailsLayout = () => {
         label: '节点通信超时',
         children: `${taskDetail.initiatorConfig?.linkConfig?.recvTimeoutMs || '30'}s`,
       },
+      ...dataConfirmItem,
     ];
   }, [taskDetail.initiatorConfig, taskId]);
 
@@ -331,7 +352,7 @@ export const TaskDetailsLayout = () => {
     <div className={styles.taskDetailsContent}>
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-          <ArrowLeftOutlined onClick={() => history.push('/')} />
+          <ArrowLeftOutlined onClick={() => history.push('/home')} />
           <Title level={4}>任务名称：{taskDetail.name}</Title>
           <span className={styles.idText}>ID：{taskId}</span>
           <Button
@@ -357,6 +378,8 @@ export const TaskDetailsLayout = () => {
               name={taskDetail.name}
               recoveryEnabled={taskDetail.initiatorConfig?.recoveryConfig?.enabled}
               agreeData={{
+                dataTableConfirmation:
+                  taskDetail?.initiatorConfig?.dataTableConfirmation,
                 initiatorDataTableInformation: {
                   nodeId: taskDetail?.initiatorConfig?.nodeId,
                   dataTableName: taskDetail?.initiatorConfig?.inputConfig?.path,
@@ -433,7 +456,7 @@ export const TaskDetailsLayout = () => {
             showIcon
             message={
               <>
-                <span style={{ marginRight: '24px' }}>
+                <span className={styles.errMsg}>
                   {taskDetail.errMsg
                     ? `任务运行失败，${taskDetail.errMsg}`
                     : DEFAULT_ERROR_MESSAGE}
@@ -454,7 +477,7 @@ export const TaskDetailsLayout = () => {
             showIcon
             message={
               <>
-                <span style={{ marginRight: '24px' }}>{`任务已取消`}</span>
+                <span className={styles.errMsg}>{`任务已取消`}</span>
                 {operation.includes(TaskAction.LOG) && (
                   <Link onClick={() => modalManager.openModal('task-log', taskId)}>
                     查看日志
@@ -484,7 +507,7 @@ export const TaskDetailsLayout = () => {
             icon={viewInstance.logSucceeded()}
             message={
               <>
-                <span style={{ marginRight: '24px' }}>任务运行成功</span>
+                <span className={styles.successMsg}>任务运行成功</span>
                 {operation.includes(TaskAction.LOG) && (
                   <Link onClick={() => modalManager.openModal('task-log', taskId)}>
                     查看日志
@@ -527,8 +550,8 @@ export const TaskDetailsLayout = () => {
         />
         <Descriptions
           title={
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Title level={5} style={{ margin: 0 }}>
+            <div className={styles.advancedDescriptions}>
+              <Title level={5} className={styles.title}>
                 高级配置
               </Title>
               {configStatus ? (
@@ -586,7 +609,7 @@ export class TaskDetailView extends Model {
     });
 
     return (
-      <span style={{ marginRight: 6, display: 'inline-block' }}>
+      <span className={styles.logSuccess}>
         <AntdImage
           width={14}
           preview={false}
@@ -655,14 +678,12 @@ export class TaskDetailView extends Model {
     } catch (e) {
       if ((e as Error).message === 'PROJECT_DATA_NOT_EXISTS_ERROR') {
         notification.warning({
-          message: (
-            <div style={{ fontWeight: 500, fontSize: 16 }}>请确认数据表路径地址</div>
-          ),
+          message: <div className={styles.warningMsg}>请确认数据表路径地址</div>,
           description: `请将文件放到${this.nodeService.nodePath} 路径下`,
         });
       } else if ((e as Error).message === 'PROJECT_DATA_HEADER_NOT_EXISTS_ERROR') {
         notification.warning({
-          message: <div style={{ fontWeight: 500, fontSize: 16 }}>请确认关联键</div>,
+          message: <div className={styles.warningMsg}>请确认关联键</div>,
           description: `关联键不存在`,
         });
       } else {
@@ -717,7 +738,7 @@ export class TaskDetailView extends Model {
       //   jobId,
       //   nodeId: this.nodeService.currentNode?.nodeId as string,
       // });
-      history.push('/');
+      history.push('/home');
     } catch (e) {
       message.error((e as Error).message);
     }
