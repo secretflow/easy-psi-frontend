@@ -10,7 +10,6 @@ Easy PSI is a web platform focused on Private Set Intersection(PSI), which is ba
 
 Currently, we only provide detailed documentations in Chinese.
 
-- [Development](./docs/development/build_easypsi_cn.md)
 - [User Guide](https://www.secretflow.org.cn/zh-CN/docs/easy-psi/)
 
 ## Downloads
