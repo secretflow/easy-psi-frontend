@@ -1,7 +1,7 @@
 # Easy PSI
 
 <p align="center">
-<a href="./README.zh-CN.md">简体中文</a>｜<a href="./README.md">English</a>
+<a href="./README.zh-Hans.md">简体中文</a>｜<a href="./README.md">English</a>
 </p>
 
 Easy PSI is a web platform focused on Private Set Intersection(PSI), which is based on [Kuscia](https://github.com/secretflow/kuscia) and [SecretFlow PSI Library](https://github.com/secretflow/psi).
